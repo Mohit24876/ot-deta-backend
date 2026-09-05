@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>OT DETA · Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+        body { background: #eef3f8; display: flex; justify-content: center; padding: 10px 8px 30px; min-height: 100vh; }
+        .card { max-width: 480px; width: 100%; background: white; border-radius: 24px; box-shadow: 0 8px 24px -6px rgba(0,20,30,0.12); padding: 1.5rem 1rem 1.8rem; }
+        .logo { text-align: center; margin-bottom: 1.5rem; }
+        .logo i { font-size: 3rem; color: #1a7f8c; }
+        .logo h1 { font-size: 1.8rem; color: #0b2b3c; margin-top: 0.3rem; }
+        .logo p { color: #597a8c; font-size: 0.8rem; }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+        .menu-btn { background: #f8faff; border: 2px solid #e6edf4; border-radius: 16px; padding: 1.2rem 0.8rem; text-align: center; cursor: pointer; text-decoration: none; transition: 0.15s; color: #0b2b3c; }
+        .menu-btn:active { transform: scale(0.96); }
+        .menu-btn i { font-size: 1.8rem; color: #1a7f8c; display: block; margin-bottom: 0.4rem; }
+        .menu-btn .title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+        .menu-btn .desc { font-size: 0.55rem; color: #597a8c; margin-top: 0.2rem; }
+        .menu-btn .badge { display: inline-block; background: #27ae60; color: white; font-size: 0.5rem; font-weight: 700; padding: 0.05rem 0.5rem; border-radius: 30px; margin-top: 0.3rem; }
+        .menu-btn.full { grid-column: 1 / -1; }
+        .menu-btn:hover { border-color: #2f9ba7; background: #f0f8ff; }
+        .menu-btn.primary { background: #1a7f8c; border-color: #1a7f8c; color: white; }
+        .menu-btn.primary i { color: white; }
+        .footer-meta { margin-top: 1.5rem; font-size: 0.55rem; color: #95b3c5; display: flex; justify-content: center; border-top: 1px solid #e2ecf5; padding-top: 0.8rem; gap: 12px; flex-wrap: wrap; }
+        @media (max-width: 420px) { .card { padding: 1rem 0.6rem 1.5rem; } .menu-grid { gap: 8px; } .menu-btn { padding: 0.8rem 0.4rem; } .menu-btn i { font-size: 1.4rem; } }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="logo">
+        <i class="fas fa-clipboard-list"></i>
+        <h1>OT DETA</h1>
+        <p>Surgical OT Management System</p>
+    </div>
+    <div class="menu-grid">
+        <a href="entry.html" class="menu-btn full primary">
+            <i class="fas fa-edit"></i>
+            <div class="title">ENTER TODAY'S DATA</div>
+            <div class="desc">Record OT procedures, LSCS, Anesthesia & more</div>
+            <span class="badge">LIVE</span>
+        </a>
+        <a href="doctors.html" class="menu-btn">
+            <i class="fas fa-user-md"></i>
+            <div class="title">MANAGE DOCTORS</div>
+            <div class="desc">Add, edit, or remove doctors</div>
+            <span class="badge">LIVE</span>
+        </a>
+        <a href="config.html" class="menu-btn">
+            <i class="fas fa-cogs"></i>
+            <div class="title">SYSTEM CONFIG</div>
+            <div class="desc">Manage specialties, departments & more</div>
+            <span class="badge">LIVE</span>
+        </a>
+        <a href="table-builder.html" class="menu-btn">
+            <i class="fas fa-table"></i>
+            <div class="title">TABLE BUILDER</div>
+            <div class="desc">Build & manage your tables</div>
+            <span class="badge">LIVE</span>
+        </a>
+        <a href="summary-builder.html" class="menu-btn">
+            <i class="fas fa-file-alt"></i>
+            <div class="title">SUMMARY BUILDER</div>
+            <div class="desc">Customize WhatsApp summaries</div>
+            <span class="badge">LIVE</span>
+        </a>
+        <a href="whatsapp-send.html" class="menu-btn">
+            <i class="fab fa-whatsapp"></i>
+            <div class="title">WHATSAPP SEND</div>
+            <div class="desc">Send summaries to WhatsApp</div>
+            <span class="badge">LIVE</span>
+        </a>
+    </div>
+    <div class="footer-meta">
+        <span><i class="far fa-clock"></i> v3.0 · Self-Managing System</span>
+    </div>
+</div>
+</body>
+</html>
