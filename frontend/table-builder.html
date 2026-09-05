@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>Table Builder · OT DETA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, system-ui, sans-serif; }
+        body { background: #eef3f8; display: flex; justify-content: center; padding: 10px 8px 30px; min-height: 100vh; }
+        .card { max-width: 480px; width: 100%; background: white; border-radius: 24px; box-shadow: 0 8px 24px -6px rgba(0,20,30,0.12); padding: 1rem 0.9rem 1.8rem; }
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 2px solid #e6edf4; padding-bottom: 0.5rem; }
+        .header h1 { font-size: 1.2rem; color: #0b2b3c; }
+        .header h1 i { color: #1a7f8c; }
+        .back-btn { background: #eaf1f8; border: none; border-radius: 40px; padding: 0.3rem 0.8rem; font-size: 0.6rem; font-weight: 600; color: #124257; cursor: pointer; text-decoration: none; }
+        .nav-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 0.8rem; padding: 0.4rem 0.6rem; background: #f5faff; border-radius: 16px; border: 1px solid #d0dfec; }
+        .nav-bar a { text-decoration: none; color: #1a7f8c; font-size: 0.6rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 30px; background: white; border: 1px solid #e6edf4; }
+        .nav-bar a:hover { background: #1a7f8c; color: white; border-color: #1a7f8c; }
+        .nav-bar a.active { background: #1a7f8c; color: white; border-color: #1a7f8c; }
+        .btn { border: none; background: #ecf3fa; padding: 8px 14px; border-radius: 60px; font-weight: 700; color: #1b4b5e; display: inline-flex; align-items: center; gap: 6px; font-size: 0.6rem; border: 1px solid transparent; cursor: pointer; transition: 0.1s; }
+        .btn:active { transform: scale(0.95); }
+        .btn-primary { background: #1a7f8c; color: white; }
+        .btn-primary i { color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-success i { color: white; }
+        .btn-danger { background: #c0392b; color: white; }
+        .btn-danger i { color: white; }
+        .btn-sm { padding: 2px 8px; font-size: 0.5rem; }
+        .table-item { background: #f8faff; border-radius: 16px; border: 1px solid #e6edf4; padding: 0.8rem; margin-bottom: 0.8rem; }
+        .table-item .table-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; }
+        .table-item .table-name { font-size: 0.85rem; font-weight: 700; color: #0e3b4b; }
+        .table-item .table-actions { display: flex; gap: 4px; }
+        .table-item .table-body { padding-left: 0.5rem; }
+        .table-item .section-label { font-size: 0.6rem; font-weight: 700; color: #597a8c; text-transform: uppercase; margin: 0.5rem 0 0.2rem; }
+        .item-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px; border-bottom: 1px solid #e6eef5; }
+        .item-row .name { font-size: 0.7rem; color: #124257; }
+        .item-row .actions { display: flex; gap: 3px; }
+        .add-bar { display: flex; gap: 6px; flex-wrap: wrap; margin: 0.3rem 0; }
+        .add-bar input { flex: 1; min-width: 80px; border: 2px solid #b9d1df; border-radius: 30px; padding: 0.2rem 0.8rem; font-size: 0.65rem; font-weight: 600; color: #124257; background: white; }
+        .add-bar input:focus { border-color: #2f9ba7; outline: none; }
+        .add-table-bar { display: flex; gap: 8px; margin-bottom: 0.8rem; }
+        .add-table-bar input { flex: 1; border: 2px solid #b9d1df; border-radius: 30px; padding: 0.3rem 1rem; font-size: 0.7rem; font-weight: 600; color: #124257; background: white; }
+        .add-table-bar input:focus { border-color: #2f9ba7; outline: none; }
+        .notification { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #1a7f8c; color: white; padding: 12px 24px; border-radius: 40px; font-weight: 600; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; display: none; text-align: center; }
+        .empty-state { color: #597a8c; font-size: 0.65rem; padding: 12px; text-align: center; }
+        .footer-meta { margin-top: 1.5rem; font-size: 0.55rem; color: #95b3c5; display: flex; justify-content: center; border-top: 1px solid #e2ecf5; padding-top: 0.8rem; gap: 12px; flex-wrap: wrap; }
+        .note-box { background: #eaf8f0; border-radius: 12px; padding: 0.5rem 0.8rem; margin-bottom: 0.8rem; border: 1px solid #27ae60; font-size: 0.65rem; color: #1a6b3c; }
+        @media (max-width: 420px) { .card { padding: 0.7rem 0.5rem 1.5rem; } .item-row { flex-wrap: wrap; gap: 4px; } .item-row .actions { width: 100%; justify-content: flex-end; } .add-bar { flex-direction: column; } }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div id="notification" class="notification"></div>
+    <div class="header">
+        <h1><i class="fas fa-table"></i> TABLE BUILDER</h1>
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> BACK</a>
+    </div>
+    <div class="nav-bar">
+        <a href="index.html">🏠 HOME</a>
+        <a href="entry.html">📝 ENTRY</a>
+        <a href="table-builder.html" class="active">📊 BUILDER</a>
+        <a href="summary-builder.html">📊 SUMMARY</a>
+        <a href="whatsapp-send.html">📱 WHATSAPP</a>
+    </div>
+    <div class="note-box">
+        <i class="fas fa-info-circle"></i> Build your tables here. Changes reflect instantly on the Entry page!
+    </div>
+
+    <div class="add-table-bar">
+        <input type="text" id="newTableName" placeholder="New table name..." />
+        <button class="btn btn-primary" id="addTableBtn"><i class="fas fa-plus"></i> ADD</button>
+    </div>
+    <div id="tablesContainer"><div class="empty-state">Loading tables...</div></div>
+
+    <div class="footer-meta">
+        <span><i class="fas fa-database"></i> Stored in Supabase</span>
+        <span><i class="fas fa-sync"></i> Auto-updates Entry page</span>
+    </div>
+</div>
+<script>
+(function() {
+    const API_BASE_URL = 'https://ot-deta-backend.onrender.com/api';
+
+    function showNotification(msg, success = true) {
+        const el = document.getElementById('notification');
+        if (!el) return;
+        el.textContent = msg;
+        el.style.display = 'block';
+        el.style.background = success ? '#1a7f8c' : '#c0392b';
+        clearTimeout(el._timeout);
+        el._timeout = setTimeout(() => { el.style.display = 'none'; }, 3000);
+    }
+
+    async function fetchApi(url, options = {}) {
+        try { const res = await fetch(url, options); return await res.json(); }
+        catch (e) { console.error('API Error:', e); return { status: 'error', detail: 'Network error' }; }
+    }
+
+    // ============================================
+    // TABLES
+    // ============================================
+    async function loadTables() {
+        const res = await fetchApi(`${API_BASE_URL}/dynamic-tables/all`);
+        const container = document.getElementById('tablesContainer');
+        if (res.status !== 'success' || !res.data || res.data.length === 0) {
+            container.innerHTML = '<div class="empty-state">No tables created yet. Add one above!</div>';
+            return;
+        }
+        let html = '';
+        for (const table of res.data) {
+            const rows = await fetchApi(`${API_BASE_URL}/table-rows/${table.id}`);
+            const columns = await fetchApi(`${API_BASE_URL}/table-columns/${table.id}`);
+            html += `
+                <div class="table-item" data-table-id="${table.id}">
+                    <div class="table-header">
+                        <span class="table-name">📋 ${table.name}</span>
+                        <div class="table-actions">
+                            <button class="btn btn-warning btn-sm" onclick="renameTable('${table.id}','${table.name}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteTable('${table.id}','${table.name}')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="table-body">
+                        <div class="section-label">👨‍⚕️ ROWS</div>
+                        ${rows.data && rows.data.length > 0 ? rows.data.map(r => `
+                            <div class="item-row">
+                                <span class="name">${r.row_name}</span>
+                                <div class="actions">
+                                    <button class="btn btn-warning btn-sm" onclick="editRow('${r.id}','${r.row_name}')"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteRow('${r.id}')"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        `).join('') : '<div class="empty-state" style="padding:4px;">No rows</div>'}
+                        <div class="add-bar">
+                            <input type="text" id="rowInput_${table.id}" placeholder="Add row..." />
+                            <button class="btn btn-success btn-sm" onclick="addRow('${table.id}')"><i class="fas fa-plus"></i> ADD</button>
+                        </div>
+                        <div class="section-label" style="margin-top:0.5rem;">📊 COLUMNS</div>
+                        ${columns.data && columns.data.length > 0 ? columns.data.map(c => `
+                            <div class="item-row">
+                                <span class="name">${c.column_name}</span>
+                                <div class="actions">
+                                    <button class="btn btn-warning btn-sm" onclick="editColumn('${c.id}','${c.column_name}')"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteColumn('${c.id}')"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        `).join('') : '<div class="empty-state" style="padding:4px;">No columns</div>'}
+                        <div class="add-bar">
+                            <input type="text" id="colInput_${table.id}" placeholder="Add column..." />
+                            <button class="btn btn-success btn-sm" onclick="addColumn('${table.id}')"><i class="fas fa-plus"></i> ADD</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        container.innerHTML = html;
+    }
+
+    document.getElementById('addTableBtn').addEventListener('click', async function() {
+        const input = document.getElementById('newTableName');
+        const name = input.value.trim();
+        if (!name) { showNotification('⚠️ Enter a table name', false); return; }
+        const res = await fetchApi(`${API_BASE_URL}/dynamic-tables/`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name })
+        });
+        if (res.status === 'success') { showNotification('✅ Table created!'); input.value = ''; loadTables(); }
+        else { showNotification('❌ Error creating table', false); }
+    });
+
+    window.renameTable = function(tableId, currentName) {
+        const newName = prompt('Enter new table name:', currentName);
+        if (!newName || newName === currentName) return;
+        fetchApi(`${API_BASE_URL}/dynamic-tables/${tableId}`, {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: newName })
+        }).then(res => {
+            if (res.status === 'success') { showNotification('✅ Table renamed!'); loadTables(); }
+            else { showNotification('❌ Error renaming table', false); }
+        });
+    };
+
+    window.deleteTable = function(tableId, tableName) {
+        if (!confirm(`⚠️ Delete "${tableName}"?\n\nPast records will NOT be affected.`)) return;
+        fetchApi(`${API_BASE_URL}/dynamic-tables/${tableId}`, { method: 'DELETE' })
+            .then(res => {
+                if (res.status === 'success') { showNotification('✅ Table deactivated'); loadTables(); }
+                else { showNotification('❌ Error deleting table', false); }
+            });
+    };
+
+    window.addRow = async function(tableId) {
+        const input = document.getElementById(`rowInput_${tableId}`);
+        const name = input.value.trim();
+        if (!name) { showNotification('⚠️ Enter a row name', false); return; }
+        const res = await fetchApi(`${API_BASE_URL}/table-rows/`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ table_id: tableId, row_name: name })
+        });
+        if (res.status === 'success') { showNotification('✅ Row added!'); input.value = ''; loadTables(); }
+        else { showNotification('❌ Error adding row', false); }
+    };
+
+    window.editRow = function(rowId, currentName) {
+        const newName = prompt('Enter new row name:', currentName);
+        if (!newName || newName === currentName) return;
+        fetchApi(`${API_BASE_URL}/table-rows/${rowId}`, {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ row_name: newName })
+        }).then(res => {
+            if (res.status === 'success') { showNotification('✅ Row updated!'); loadTables(); }
+            else { showNotification('❌ Error updating row', false); }
+        });
+    };
+
+    window.deleteRow = function(rowId) {
+        if (!confirm('Delete this row?')) return;
+        fetchApi(`${API_BASE_URL}/table-rows/${rowId}`, { method: 'DELETE' })
+            .then(res => {
+                if (res.status === 'success') { showNotification('✅ Row deactivated'); loadTables(); }
+                else { showNotification('❌ Error deleting row', false); }
+            });
+    };
+
+    window.addColumn = async function(tableId) {
+        const input = document.getElementById(`colInput_${tableId}`);
+        const name = input.value.trim();
+        if (!name) { showNotification('⚠️ Enter a column name', false); return; }
+        const res = await fetchApi(`${API_BASE_URL}/table-columns/`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ table_id: tableId, column_name: name })
+        });
+        if (res.status === 'success') { showNotification('✅ Column added!'); input.value = ''; loadTables(); }
+        else { showNotification('❌ Error adding column', false); }
+    };
+
+    window.editColumn = function(columnId, currentName) {
+        const newName = prompt('Enter new column name:', currentName);
+        if (!newName || newName === currentName) return;
+        fetchApi(`${API_BASE_URL}/table-columns/${columnId}`, {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ column_name: newName })
+        }).then(res => {
+            if (res.status === 'success') { showNotification('✅ Column updated!'); loadTables(); }
+            else { showNotification('❌ Error updating column', false); }
+        });
+    };
+
+    window.deleteColumn = function(columnId) {
+        if (!confirm('Delete this column?')) return;
+        fetchApi(`${API_BASE_URL}/table-columns/${columnId}`, { method: 'DELETE' })
+            .then(res => {
+                if (res.status === 'success') { showNotification('✅ Column deactivated'); loadTables(); }
+                else { showNotification('❌ Error deleting column', false); }
+            });
+    };
+
+    // ============================================
+    // INIT
+    // ============================================
+    loadTables();
+})();
+</script>
+</body>
+</html>
