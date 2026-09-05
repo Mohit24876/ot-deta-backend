@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>System Config · OT DETA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, system-ui, sans-serif; }
+        body { background: #eef3f8; display: flex; justify-content: center; padding: 10px 8px 30px; min-height: 100vh; }
+        .card { max-width: 480px; width: 100%; background: white; border-radius: 24px; box-shadow: 0 8px 24px -6px rgba(0,20,30,0.12); padding: 1rem 0.9rem 1.8rem; }
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 2px solid #e6edf4; padding-bottom: 0.5rem; }
+        .header h1 { font-size: 1.2rem; color: #0b2b3c; }
+        .header h1 i { color: #1a7f8c; }
+        .back-btn { background: #eaf1f8; border: none; border-radius: 40px; padding: 0.3rem 0.8rem; font-size: 0.6rem; font-weight: 600; color: #124257; cursor: pointer; text-decoration: none; }
+        .nav-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 0.8rem; padding: 0.4rem 0.6rem; background: #f5faff; border-radius: 16px; border: 1px solid #d0dfec; }
+        .nav-bar a { text-decoration: none; color: #1a7f8c; font-size: 0.6rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 30px; background: white; border: 1px solid #e6edf4; }
+        .nav-bar a:hover { background: #1a7f8c; color: white; border-color: #1a7f8c; }
+        .nav-bar a.active { background: #1a7f8c; color: white; border-color: #1a7f8c; }
+        .btn { border: none; background: #ecf3fa; padding: 8px 14px; border-radius: 60px; font-weight: 700; color: #1b4b5e; display: inline-flex; align-items: center; gap: 6px; font-size: 0.6rem; border: 1px solid transparent; cursor: pointer; transition: 0.1s; }
+        .btn:active { transform: scale(0.95); }
+        .btn-primary { background: #1a7f8c; color: white; }
+        .btn-primary i { color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-success i { color: white; }
+        .btn-danger { background: #c0392b; color: white; }
+        .btn-danger i { color: white; }
+        .btn-sm { padding: 2px 8px; font-size: 0.5rem; }
+        .tabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 1rem; background: #f5faff; border-radius: 16px; padding: 4px; }
+        .tab-btn { flex: 1; min-width: 40px; padding: 6px 4px; border: none; border-radius: 12px; font-size: 0.45rem; font-weight: 700; color: #597a8c; background: transparent; cursor: pointer; transition: 0.2s; text-transform: uppercase; }
+        .tab-btn.active { background: #1a7f8c; color: white; }
+        .tab-btn i { margin-right: 2px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .section-title { font-weight: 700; font-size: 0.8rem; color: #0e3b4b; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px; }
+        .section-title .count { background: #eaf1f8; padding: 0.05rem 0.6rem; border-radius: 30px; font-size: 0.55rem; color: #597a8c; }
+        .add-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 0.8rem; }
+        .add-bar input { flex: 1; min-width: 80px; border: 2px solid #b9d1df; border-radius: 30px; padding: 0.3rem 0.8rem; font-size: 0.65rem; font-weight: 600; color: #124257; background: white; }
+        .add-bar input:focus { border-color: #2f9ba7; outline: none; }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; border-bottom: 1px solid #e6eef5; }
+        .list-item .name { font-size: 0.7rem; font-weight: 600; color: #0e3b4b; }
+        .list-item .status { font-size: 0.5rem; font-weight: 600; padding: 0.05rem 0.4rem; border-radius: 30px; }
+        .list-item .status.active { background: #d5f5e3; color: #27ae60; }
+        .list-item .status.inactive { background: #fadbd8; color: #c0392b; }
+        .list-item .actions { display: flex; gap: 3px; }
+        .notification { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #1a7f8c; color: white; padding: 12px 24px; border-radius: 40px; font-weight: 600; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; display: none; text-align: center; }
+        .empty-state { color: #597a8c; font-size: 0.65rem; padding: 12px; text-align: center; }
+        .footer-meta { margin-top: 1.5rem; font-size: 0.55rem; color: #95b3c5; display: flex; justify-content: center; border-top: 1px solid #e2ecf5; padding-top: 0.8rem; gap: 12px; flex-wrap: wrap; }
+        .note-box { background: #eaf8f0; border-radius: 12px; padding: 0.5rem 0.8rem; margin-bottom: 0.8rem; border: 1px solid #27ae60; font-size: 0.65rem; color: #1a6b3c; }
+        @media (max-width: 420px) { .card { padding: 0.7rem 0.5rem 1.5rem; } .tabs { gap: 2px; } .tab-btn { font-size: 0.4rem; padding: 4px 3px; } .list-item { flex-wrap: wrap; gap: 4px; } .list-item .actions { width: 100%; justify-content: flex-end; } .add-bar { flex-direction: column; } }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div id="notification" class="notification"></div>
+    <div class="header">
+        <h1><i class="fas fa-cogs"></i> SYSTEM CONFIG</h1>
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> BACK</a>
+    </div>
+    <div class="nav-bar">
+        <a href="index.html">🏠 HOME</a>
+        <a href="entry.html">📝 ENTRY</a>
+        <a href="doctors.html">👨‍⚕️ DOCTORS</a>
+        <a href="config.html" class="active">⚙️ CONFIG</a>
+        <a href="table-builder.html">📊 BUILDER</a>
+    </div>
+    <div class="note-box">
+        <i class="fas fa-info-circle"></i> Manage specialties, departments, sections, and record types.
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="specialties"><i class="fas fa-stethoscope"></i> Spec</button>
+        <button class="tab-btn" data-tab="departments"><i class="fas fa-building"></i> Dept</button>
+        <button class="tab-btn" data-tab="sections"><i class="fas fa-layer-group"></i> Sec</button>
+        <button class="tab-btn" data-tab="recordtypes"><i class="fas fa-list"></i> RT</button>
+    </div>
+
+    <!-- ===== SPECIALTIES ===== -->
+    <div class="tab-content active" id="tab-specialties">
+        <div class="section-title">👨‍⚕️ Specialties <span class="count" id="specCount">0</span></div>
+        <div class="add-bar">
+            <input type="text" id="specInput" placeholder="New specialty..." />
+            <button class="btn btn-success" id="addSpecBtn"><i class="fas fa-plus"></i> ADD</button>
+        </div>
+        <div id="specList"><div class="empty-state">Loading...</div></div>
+    </div>
+
+    <!-- ===== DEPARTMENTS ===== -->
+    <div class="tab-content" id="tab-departments">
+        <div class="section-title">🏥 Departments <span class="count" id="deptCount">0</span></div>
+        <div class="add-bar">
+            <input type="text" id="deptInput" placeholder="New department..." />
+            <button class="btn btn-success" id="addDeptBtn"><i class="fas fa-plus"></i> ADD</button>
+        </div>
+        <div id="deptList"><div class="empty-state">Loading...</div></div>
+    </div>
+
+    <!-- ===== SECTIONS ===== -->
+    <div class="tab-content" id="tab-sections">
+        <div class="section-title">📋 Sections <span class="count" id="secCount">0</span></div>
+        <div class="add-bar">
+            <input type="text" id="secInput" placeholder="New section..." />
+            <button class="btn btn-success" id="addSecBtn"><i class="fas fa-plus"></i> ADD</button>
+        </div>
+        <div id="secList"><div class="empty-state">Loading...</div></div>
+    </div>
+
+    <!-- ===== RECORD TYPES ===== -->
+    <div class="tab-content" id="tab-recordtypes">
+        <div class="section-title">📝 Record Types <span class="count" id="rtCount">0</span></div>
+        <div class="add-bar">
+            <input type="text" id="rtInput" placeholder="New record type..." />
+            <select id="rtSectionSelect"><option value="">Select section</option></select>
+            <button class="btn btn-success" id="addRtBtn"><i class="fas fa-plus"></i> ADD</button>
+        </div>
+        <div id="rtList"><div class="empty-state">Loading...</div></div>
+    </div>
+
+    <div class="footer-meta">
+        <span><i class="fas fa-database"></i> Stored in Supabase</span>
+        <span><i class="fas fa-sync"></i> Changes reflect everywhere</span>
+    </div>
+</div>
+<script>
+(function() {
+    const API_BASE_URL = 'https://ot-deta-backend.onrender.com/api';
+
+    function showNotification(msg, success = true) {
+        const el = document.getElementById('notification');
+        if (!el) return;
+        el.textContent = msg;
+        el.style.display = 'block';
+        el.style.background = success ? '#1a7f8c' : '#c0392b';
+        clearTimeout(el._timeout);
+        el._timeout = setTimeout(() => { el.style.display = 'none'; }, 3000);
+    }
+
+    async function fetchApi(url, options = {}) {
+        try {
+            const res = await fetch(url, options);
+            return await res.json();
+        } catch (e) {
+            console.error('API Error:', e);
+            return { status: 'error', detail: 'Network error' };
+        }
+    }
+
+    function renderList(containerId, items, countId, renderFn) {
+        const container = document.getElementById(containerId);
+        const countEl = document.getElementById(countId);
+        if (!container) return;
+        if (!items || items.length === 0) {
+            container.innerHTML = '<div class="empty-state">No items found</div>';
+            if (countEl) countEl.textContent = '0';
+            return;
+        }
+        container.innerHTML = items.map(renderFn).join('');
+        if (countEl) countEl.textContent = items.length;
+    }
+
+    // ============================================
+    // SPECIALTIES
+    // ============================================
+    async function loadSpecialties() {
+        const data = await fetchApi(`${API_BASE_URL}/specialties/all`);
+        if (data.status === 'success') {
+            renderList('specList', data.data, 'specCount', item => `
+                <div class="list-item">
+                    <div>
+                        <span class="name">${item.name}</span>
+                        <span class="status ${item.is_active ? 'active' : 'inactive'}">${item.is_active ? 'ACTIVE' : 'INACTIVE'}</span>
+                    </div>
+                    <div class="actions">
+                        ${item.is_active 
+                            ? `<button class="btn btn-danger btn-sm" onclick="deleteItem('specialties','${item.id}','${item.name}')"><i class="fas fa-trash"></i></button>`
+                            : `<button class="btn btn-success btn-sm" onclick="reactivateItem('specialties','${item.id}','${item.name}')"><i class="fas fa-undo"></i></button>`
+                        }
+                    </div>
+                </div>
+            `);
+        }
+    }
+
+    // ============================================
+    // DEPARTMENTS
+    // ============================================
+    async function loadDepartments() {
+        const data = await fetchApi(`${API_BASE_URL}/departments/all`);
+        if (data.status === 'success') {
+            renderList('deptList', data.data, 'deptCount', item => `
+                <div class="list-item">
+                    <div>
+                        <span class="name">${item.name}</span>
+                        <span class="status ${item.is_active ? 'active' : 'inactive'}">${item.is_active ? 'ACTIVE' : 'INACTIVE'}</span>
+                    </div>
+                    <div class="actions">
+                        ${item.is_active 
+                            ? `<button class="btn btn-danger btn-sm" onclick="deleteItem('departments','${item.id}','${item.name}')"><i class="fas fa-trash"></i></button>`
+                            : `<button class="btn btn-success btn-sm" onclick="reactivateItem('departments','${item.id}','${item.name}')"><i class="fas fa-undo"></i></button>`
+                        }
+                    </div>
+                </div>
+            `);
+        }
+    }
+
+    // ============================================
+    // SECTIONS
+    // ============================================
+    async function loadSections() {
+        const data = await fetchApi(`${API_BASE_URL}/sections/all`);
+        if (data.status === 'success') {
+            renderList('secList', data.data, 'secCount', item => `
+                <div class="list-item">
+                    <div>
+                        <span class="name">${item.name}</span>
+                        <span class="status ${item.is_active ? 'active' : 'inactive'}">${item.is_active ? 'ACTIVE' : 'INACTIVE'}</span>
+                    </div>
+                    <div class="actions">
+                        ${item.is_active 
+                            ? `<button class="btn btn-danger btn-sm" onclick="deleteItem('sections','${item.id}','${item.name}')"><i class="fas fa-trash"></i></button>`
+                            : `<button class="btn btn-success btn-sm" onclick="reactivateItem('sections','${item.id}','${item.name}')"><i class="fas fa-undo"></i></button>`
+                        }
+                    </div>
+                </div>
+            `);
+        }
+        // Populate section dropdown for record types
+        const activeData = await fetchApi(`${API_BASE_URL}/sections/`);
+        if (activeData.status === 'success') {
+            const select = document.getElementById('rtSectionSelect');
+            const currentValue = select.value;
+            select.innerHTML = '<option value="">Select section</option>';
+            activeData.data.forEach(sec => {
+                const option = document.createElement('option');
+                option.value = sec.id;
+                option.textContent = sec.name;
+                select.appendChild(option);
+            });
+            if (currentValue) select.value = currentValue;
+        }
+    }
+
+    // ============================================
+    // RECORD TYPES
+    // ============================================
+    async function loadRecordTypes() {
+        const data = await fetchApi(`${API_BASE_URL}/record-types/`);
+        if (data.status === 'success') {
+            renderList('rtList', data.data, 'rtCount', item => `
+                <div class="list-item">
+                    <div>
+                        <span class="name">${item.name}</span>
+                        <span class="status ${item.is_active ? 'active' : 'inactive'}">${item.is_active ? 'ACTIVE' : 'INACTIVE'}</span>
+                    </div>
+                    <div class="actions">
+                        ${item.is_active 
+                            ? `<button class="btn btn-danger btn-sm" onclick="deleteItem('record-types','${item.id}','${item.name}')"><i class="fas fa-trash"></i></button>`
+                            : `<button class="btn btn-success btn-sm" onclick="reactivateItem('record-types','${item.id}','${item.name}')"><i class="fas fa-undo"></i></button>`
+                        }
+                    </div>
+                </div>
+            `);
+        }
+    }
+
+    // ============================================
+    // CRUD OPERATIONS
+    // ============================================
+    window.deleteItem = async function(table, id, name) {
+        if (!confirm(`Delete "${name}"? This can be undone.`)) return;
+        const data = await fetchApi(`${API_BASE_URL}/${table}/${id}`, { method: 'DELETE' });
+        if (data.status === 'success') {
+            showNotification(`✅ ${name} deactivated`);
+            refreshAll();
+        } else {
+            showNotification('❌ Error: ' + (data.detail || 'Unknown'), false);
+        }
+    };
+
+    window.reactivateItem = async function(table, id, name) {
+        if (!confirm(`Reactivate "${name}"?`)) return;
+        const data = await fetchApi(`${API_BASE_URL}/${table}/${id}/reactivate`, { method: 'POST' });
+        if (data.status === 'success') {
+            showNotification(`✅ ${name} reactivated`);
+            refreshAll();
+        } else {
+            showNotification('❌ Error: ' + (data.detail || 'Unknown'), false);
+        }
+    };
+
+    async function addItem(table, body) {
+        const data = await fetchApi(`${API_BASE_URL}/${table}/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        if (data.status === 'success') {
+            showNotification(`✅ Added successfully`);
+            refreshAll();
+            return true;
+        } else {
+            showNotification('❌ Error: ' + (data.detail || 'Unknown'), false);
+            return false;
+        }
+    }
+
+    // ============================================
+    // TAB SWITCHING
+    // ============================================
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+        });
+    });
+
+    // ============================================
+    // ADD BUTTONS
+    // ============================================
+    document.getElementById('addSpecBtn').addEventListener('click', async function() {
+        const input = document.getElementById('specInput');
+        const name = input.value.trim();
+        if (!name) { showNotification('⚠️ Enter a name', false); return; }
+        await addItem('specialties', { name });
+        input.value = '';
+    });
+
+    document.getElementById('addDeptBtn').addEventListener('click', async function() {
+        const input = document.getElementById('deptInput');
+        const name = input.value.trim();
+        if (!name) { showNotification('⚠️ Enter a name', false); return; }
+        await addItem('departments', { name });
+        input.value = '';
+    });
+
+    document.getElementById('addSecBtn').addEventListener('click', async function() {
+        const input = document.getElementById('secInput');
+        const name = input.value.trim();
+        if (!name) { showNotification('⚠️ Enter a name', false); return; }
+        await addItem('sections', { name });
+        input.value = '';
+    });
+
+    document.getElementById('addRtBtn').addEventListener('click', async function() {
+        const name = document.getElementById('rtInput').value.trim();
+        const sectionId = document.getElementById('rtSectionSelect').value;
+        if (!name) { showNotification('⚠️ Enter a name', false); return; }
+        if (!sectionId) { showNotification('⚠️ Select a section', false); return; }
+        await addItem('record-types', { name, section_id: sectionId });
+        document.getElementById('rtInput').value = '';
+    });
+
+    // Enter key support
+    document.getElementById('specInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') document.getElementById('addSpecBtn').click();
+    });
+    document.getElementById('deptInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') document.getElementById('addDeptBtn').click();
+    });
+    document.getElementById('secInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') document.getElementById('addSecBtn').click();
+    });
+    document.getElementById('rtInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') document.getElementById('addRtBtn').click();
+    });
+
+    // ============================================
+    // REFRESH
+    // ============================================
+    async function refreshAll() {
+        await loadSpecialties();
+        await loadDepartments();
+        await loadSections();
+        await loadRecordTypes();
+    }
+
+    // ============================================
+    // INIT
+    // ============================================
+    refreshAll();
+})();
+</script>
+</body>
+</html>
