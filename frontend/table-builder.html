@@ -23,7 +23,6 @@
       margin: 0 auto;
     }
 
-    /* Top Bar */
     .top-bar {
       background: white;
       border-radius: 20px;
@@ -76,7 +75,6 @@
     .btn-outline { background: transparent; border: 2px solid #d0dfec; color: #1b4b5e; }
     .btn-sm { padding: 6px 16px; font-size: 0.75rem; }
 
-    /* Builder Grid */
     .builder-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -114,7 +112,6 @@
       margin-right: 8px;
     }
 
-    /* Table Preview */
     .table-preview {
       overflow-x: auto;
       border: 2px dashed #d0dfec;
@@ -151,18 +148,69 @@
       text-align: center;
     }
 
-    .table-preview .drag-handle {
+    .table-preview .deleted {
+      opacity: 0.4;
+      text-decoration: line-through;
+      background: #fde8e8;
+    }
+
+    .drag-handle {
       cursor: move;
       color: #b9d1df;
       font-size: 0.7rem;
       padding: 0 4px;
     }
 
-    .table-preview .drag-handle:hover {
+    .drag-handle:hover {
       color: #1a7f8c;
     }
 
-    /* Builder Controls */
+    .delete-btn {
+      background: transparent;
+      border: none;
+      color: #e74c3c;
+      cursor: pointer;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: 0.15s;
+      opacity: 0.5;
+    }
+
+    .delete-btn:hover {
+      opacity: 1;
+      background: #fde8e8;
+    }
+
+    .undelete-btn {
+      background: transparent;
+      border: none;
+      color: #27ae60;
+      cursor: pointer;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: 0.15s;
+      opacity: 0.5;
+    }
+
+    .undelete-btn:hover {
+      opacity: 1;
+      background: #e8f8ee;
+    }
+
+    .edit-label {
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: 0.15s;
+    }
+
+    .edit-label:hover {
+      background: #e8f0fe;
+      outline: 2px dashed #1a7f8c;
+    }
+
     .builder-controls {
       margin-top: 1rem;
       display: flex;
@@ -194,63 +242,22 @@
       border-bottom: 2px solid #1a7f8c;
     }
 
-    .delete-btn {
-      background: transparent;
-      border: none;
-      color: #e74c3c;
-      cursor: pointer;
-      font-size: 0.7rem;
-      padding: 2px 6px;
-      border-radius: 4px;
-      transition: 0.15s;
-      opacity: 0.5;
-    }
-
-    .delete-btn:hover {
-      opacity: 1;
-      background: #fde8e8;
-    }
-
-    .edit-label {
-      cursor: pointer;
-      padding: 2px 6px;
-      border-radius: 4px;
-      transition: 0.15s;
-    }
-
-    .edit-label:hover {
-      background: #e8f0fe;
-      outline: 2px dashed #1a7f8c;
-    }
-
-    /* Tabs for tables */
-    .tabs {
-      display: flex;
-      gap: 6px;
+    .data-warning {
+      background: #fef9e7;
+      border: 1px solid #f39c12;
+      border-radius: 12px;
+      padding: 0.8rem 1.2rem;
       margin-bottom: 1rem;
-      flex-wrap: wrap;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #7d6608;
+      font-size: 0.85rem;
     }
 
-    .tab {
-      padding: 8px 20px;
-      background: #eaf1f8;
-      border: none;
-      border-radius: 60px;
-      font-weight: 600;
-      color: #597a8c;
-      cursor: pointer;
-      transition: 0.15s;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-    }
-
-    .tab.active {
-      background: #1a7f8c;
-      color: white;
-    }
-
-    .tab:hover:not(.active) {
-      background: #d0dfec;
+    .data-warning i {
+      color: #f39c12;
+      font-size: 1.2rem;
     }
 
     /* Toast */
@@ -278,7 +285,7 @@
 
     .toast i { margin-right: 12px; }
 
-    /* JSON Editor Modal */
+    /* Modal */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -332,6 +339,15 @@
       justify-content: flex-end;
     }
 
+    .history-badge {
+      display: inline-block;
+      background: #eaf1f8;
+      padding: 0.2rem 0.8rem;
+      border-radius: 60px;
+      font-size: 0.7rem;
+      color: #597a8c;
+    }
+
     @media (max-width: 750px) {
       .top-bar { flex-direction: column; align-items: stretch; }
       .builder-card { padding: 1rem; }
@@ -346,6 +362,9 @@
   <div class="top-bar">
     <div class="brand">
       <i class="fas fa-tools"></i> Table Builder
+      <span class="history-badge" style="margin-left:12px;">
+        <i class="fas fa-history"></i> Data Preservation ON
+      </span>
     </div>
     <div class="actions">
       <button class="btn btn-primary btn-sm" onclick="saveConfig()">
@@ -396,29 +415,30 @@
 
 <script>
 // ========================================
-// DEFAULT CONFIGURATION
+// DEFAULT CONFIGURATION WITH VERSIONING
 // ========================================
 
 const DEFAULT_CONFIG = {
+  version: '2.0',
   tables: [
     {
       id: 'lscsTable',
       title: 'LSCS & MAJOR OT',
       icon: 'fa-procedures',
       columns: [
-        { id: 'doctor', label: 'DR.NAME', type: 'text' },
-        { id: 'lscs', label: 'LSCS', type: 'number' },
-        { id: 'de', label: 'D/E', type: 'number' },
-        { id: 'ne', label: 'N/E', type: 'number' },
-        { id: 'plan', label: 'PLAN', type: 'number' },
-        { id: 'abtl', label: 'ABTL', type: 'number' },
-        { id: 'ppiucd', label: 'PPIUCD', type: 'number' }
+        { id: 'doctor', label: 'DR.NAME', type: 'text', deleted: false },
+        { id: 'lscs', label: 'LSCS', type: 'number', deleted: false },
+        { id: 'de', label: 'D/E', type: 'number', deleted: false },
+        { id: 'ne', label: 'N/E', type: 'number', deleted: false },
+        { id: 'plan', label: 'PLAN', type: 'number', deleted: false },
+        { id: 'abtl', label: 'ABTL', type: 'number', deleted: false },
+        { id: 'ppiucd', label: 'PPIUCD', type: 'number', deleted: false }
       ],
       rows: [
-        ['DR. A. SHARMA', '1', '2', '1', '1', '0', '1'],
-        ['DR. B. MEHTA', '2', '1', '2', '0', '1', '0'],
-        ['DR. C. NAIR', '0', '1', '1', '1', '1', '0'],
-        ['DR. D. PATIL', '1', '0', '0', '2', '1', '1']
+        { id: 'row1', data: ['DR. A. SHARMA', '1', '2', '1', '1', '0', '1'], deleted: false },
+        { id: 'row2', data: ['DR. B. MEHTA', '2', '1', '2', '0', '1', '0'], deleted: false },
+        { id: 'row3', data: ['DR. C. NAIR', '0', '1', '1', '1', '1', '0'], deleted: false },
+        { id: 'row4', data: ['DR. D. PATIL', '1', '0', '0', '2', '1', '1'], deleted: false }
       ]
     },
     {
@@ -426,17 +446,17 @@ const DEFAULT_CONFIG = {
       title: 'OTHER MAJOR OT',
       icon: 'fa-hospital-user',
       columns: [
-        { id: 'dept', label: 'DEPARTMENT', type: 'text' },
-        { id: 'count', label: 'COUNT', type: 'number' },
-        { id: 'doctor', label: 'DR. NAME', type: 'select', options: ['DR. A. SHARMA', 'DR. B. MEHTA', 'DR. C. NAIR', 'DR. D. PATIL', 'DR. E. RAO', 'DR. F. KHAN', 'DR. G. LEE', 'DR. H. SEN', 'MULTIPLE'] }
+        { id: 'dept', label: 'DEPARTMENT', type: 'text', deleted: false },
+        { id: 'count', label: 'COUNT', type: 'number', deleted: false },
+        { id: 'doctor', label: 'DR. NAME', type: 'select', options: ['DR. A. SHARMA', 'DR. B. MEHTA', 'DR. C. NAIR', 'DR. D. PATIL', 'DR. E. RAO', 'DR. F. KHAN', 'DR. G. LEE', 'DR. H. SEN', 'MULTIPLE'], deleted: false }
       ],
       rows: [
-        ['FTG', '3', 'MULTIPLE'],
-        ['ENT', '2', 'MULTIPLE'],
-        ['EYE', '1', 'MULTIPLE'],
-        ['FTS', '2', 'MULTIPLE'],
-        ['LTL', '0', 'MULTIPLE'],
-        ['ORTHO', '1', 'MULTIPLE']
+        { id: 'row1', data: ['FTG', '3', 'MULTIPLE'], deleted: false },
+        { id: 'row2', data: ['ENT', '2', 'MULTIPLE'], deleted: false },
+        { id: 'row3', data: ['EYE', '1', 'MULTIPLE'], deleted: false },
+        { id: 'row4', data: ['FTS', '2', 'MULTIPLE'], deleted: false },
+        { id: 'row5', data: ['LTL', '0', 'MULTIPLE'], deleted: false },
+        { id: 'row6', data: ['ORTHO', '1', 'MULTIPLE'], deleted: false }
       ]
     },
     {
@@ -444,21 +464,21 @@ const DEFAULT_CONFIG = {
       title: 'ANESTHESIA DETA ENTRY',
       icon: 'fa-syringe',
       columns: [
-        { id: 'doctor', label: 'DR.NAME', type: 'text' },
-        { id: 'de', label: 'D/E', type: 'number' },
-        { id: 'ne', label: 'N/E', type: 'number' },
-        { id: 'plan', label: 'PLAN', type: 'number' },
-        { id: 'sa', label: 'S/A', type: 'number' },
-        { id: 'ga', label: 'GA', type: 'number' },
-        { id: 'sga', label: 'SGA', type: 'number' },
-        { id: 'block', label: 'BLOCK', type: 'number' },
-        { id: 'other', label: 'OTHER', type: 'number' }
+        { id: 'doctor', label: 'DR.NAME', type: 'text', deleted: false },
+        { id: 'de', label: 'D/E', type: 'number', deleted: false },
+        { id: 'ne', label: 'N/E', type: 'number', deleted: false },
+        { id: 'plan', label: 'PLAN', type: 'number', deleted: false },
+        { id: 'sa', label: 'S/A', type: 'number', deleted: false },
+        { id: 'ga', label: 'GA', type: 'number', deleted: false },
+        { id: 'sga', label: 'SGA', type: 'number', deleted: false },
+        { id: 'block', label: 'BLOCK', type: 'number', deleted: false },
+        { id: 'other', label: 'OTHER', type: 'number', deleted: false }
       ],
       rows: [
-        ['DR. E. RAO', '1', '0', '2', '1', '1', '0', '0', '1'],
-        ['DR. F. KHAN', '0', '1', '1', '0', '2', '1', '0', '0'],
-        ['DR. G. LEE', '2', '1', '0', '1', '0', '0', '1', '0'],
-        ['DR. H. SEN', '1', '0', '0', '0', '1', '1', '1', '0']
+        { id: 'row1', data: ['DR. E. RAO', '1', '0', '2', '1', '1', '0', '0', '1'], deleted: false },
+        { id: 'row2', data: ['DR. F. KHAN', '0', '1', '1', '0', '2', '1', '0', '0'], deleted: false },
+        { id: 'row3', data: ['DR. G. LEE', '2', '1', '0', '1', '0', '0', '1', '0'], deleted: false },
+        { id: 'row4', data: ['DR. H. SEN', '1', '0', '0', '0', '1', '1', '1', '0'], deleted: false }
       ]
     },
     {
@@ -466,16 +486,16 @@ const DEFAULT_CONFIG = {
       title: 'MINOR OR',
       icon: 'fa-bolt',
       columns: [
-        { id: 'specialty', label: 'SPECIALTY', type: 'text' },
-        { id: 'count', label: 'COUNT', type: 'number' },
-        { id: 'notes', label: 'NOTES', type: 'text' }
+        { id: 'specialty', label: 'SPECIALTY', type: 'text', deleted: false },
+        { id: 'count', label: 'COUNT', type: 'number', deleted: false },
+        { id: 'notes', label: 'NOTES', type: 'text', deleted: false }
       ],
       rows: [
-        ['FTG', '4', '—'],
-        ['ENT', '2', '—'],
-        ['EYE', '1', '—'],
-        ['FTS', '3', '—'],
-        ['ORTHO', '2', '—']
+        { id: 'row1', data: ['FTG', '4', '—'], deleted: false },
+        { id: 'row2', data: ['ENT', '2', '—'], deleted: false },
+        { id: 'row3', data: ['EYE', '1', '—'], deleted: false },
+        { id: 'row4', data: ['FTS', '3', '—'], deleted: false },
+        { id: 'row5', data: ['ORTHO', '2', '—'], deleted: false }
       ]
     }
   ]
@@ -486,34 +506,56 @@ const DEFAULT_CONFIG = {
 // ========================================
 
 let config = {};
+let deletedItems = { rows: [], columns: [] };
 
 function loadConfig() {
   const saved = localStorage.getItem('otDetaBuilderConfig');
   if (saved) {
     try {
       config = JSON.parse(saved);
+      // Ensure version
+      if (!config.version) config.version = '2.0';
+      renderBuilder();
     } catch(e) {
       config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+      renderBuilder();
     }
   } else {
     config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+    renderBuilder();
   }
-  renderBuilder();
 }
 
 function saveConfig() {
+  // Clean up deleted items from config
+  config.tables.forEach(table => {
+    table.columns = table.columns.filter(col => !col.deleted);
+    table.rows = table.rows.filter(row => !row.deleted);
+  });
+  
   localStorage.setItem('otDetaBuilderConfig', JSON.stringify(config));
   // Save to entry page storage
   localStorage.setItem('otDetaEntryConfig', JSON.stringify(config));
-  showToast('✅ Configuration saved! Entry page will reflect changes.');
+  
+  // Show warning about data preservation
+  showToast('✅ Configuration saved! Entry data preserved.');
 }
 
 function resetConfig() {
-  if (confirm('Reset to default configuration?')) {
+  if (confirm('⚠️ WARNING: This will reset the table structure.\n\nExisting entry data will be PRESERVED and mapped to new structure.\n\nContinue?')) {
+    // Save current entry data
+    const entryData = localStorage.getItem('otDetaEntryData');
+    
     config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
     renderBuilder();
     saveConfig();
-    showToast('🔄 Reset to default');
+    
+    // Restore entry data
+    if (entryData) {
+      localStorage.setItem('otDetaEntryData', entryData);
+    }
+    
+    showToast('🔄 Reset to default (data preserved)');
   }
 }
 
@@ -526,12 +568,19 @@ function renderBuilder() {
   grid.innerHTML = '';
 
   config.tables.forEach((table, tableIndex) => {
+    const activeColumns = table.columns.filter(c => !c.deleted);
+    const activeRows = table.rows.filter(r => !r.deleted);
+    const deletedColumns = table.columns.filter(c => c.deleted);
+    const deletedRows = table.rows.filter(r => r.deleted);
+
     const card = document.createElement('div');
     card.className = 'builder-card';
     card.innerHTML = `
       <div class="header">
         <h3><i class="fas ${table.icon}"></i> ${table.title}</h3>
         <div>
+          ${deletedRows.length > 0 ? `<span class="history-badge"><i class="fas fa-trash"></i> ${deletedRows.length} deleted rows</span>` : ''}
+          ${deletedColumns.length > 0 ? `<span class="history-badge"><i class="fas fa-trash"></i> ${deletedColumns.length} deleted columns</span>` : ''}
           <button class="btn btn-sm btn-outline" onclick="addColumn(${tableIndex})">
             <i class="fas fa-plus"></i> Column
           </button>
@@ -544,33 +593,47 @@ function renderBuilder() {
         </div>
       </div>
 
+      ${deletedRows.length > 0 || deletedColumns.length > 0 ? `
+        <div class="data-warning">
+          <i class="fas fa-info-circle"></i>
+          <span>
+            <strong>Data Preservation Active:</strong> 
+            ${deletedRows.length} hidden row(s) and ${deletedColumns.length} hidden column(s) 
+            contain data that will be preserved in Entry view.
+            <button class="btn btn-sm btn-outline" onclick="showDeletedItems(${tableIndex})" style="margin-left:8px;">
+              <i class="fas fa-eye"></i> View Hidden
+            </button>
+          </span>
+        </div>
+      ` : ''}
+
       <div class="table-preview">
         <table>
           <thead>
             <tr>
-              ${table.columns.map((col, colIndex) => `
+              ${activeColumns.map((col, colIndex) => `
                 <th>
-                  <span class="edit-label" onclick="editColumnLabel(${tableIndex}, ${colIndex})">${col.label}</span>
+                  <span class="edit-label" onclick="editColumnLabel(${tableIndex}, '${col.id}')">${col.label}</span>
                   <span class="drag-handle"><i class="fas fa-grip-vertical"></i></span>
-                  <button class="delete-btn" onclick="deleteColumn(${tableIndex}, ${colIndex})">✕</button>
+                  <button class="delete-btn" onclick="softDeleteColumn(${tableIndex}, '${col.id}')" title="Hide (data preserved)">✕</button>
                 </th>
               `).join('')}
             </tr>
           </thead>
           <tbody>
-            ${table.rows.map((row, rowIndex) => `
+            ${activeRows.map((row, rowIndex) => `
               <tr>
-                ${row.map((cell, cellIndex) => `
+                ${row.data.map((cell, cellIndex) => `
                   <td>
-                    ${table.columns[cellIndex]?.type === 'select' 
-                      ? `<select onchange="updateCell(${tableIndex}, ${rowIndex}, ${cellIndex}, this.value)">
-                          ${table.columns[cellIndex].options.map(opt => 
+                    ${activeColumns[cellIndex]?.type === 'select' 
+                      ? `<select onchange="updateCell(${tableIndex}, '${row.id}', ${cellIndex}, this.value)">
+                          ${activeColumns[cellIndex].options.map(opt => 
                             `<option ${opt === cell ? 'selected' : ''}>${opt}</option>`
                           ).join('')}
                         </select>`
-                      : `<span class="edit-label" onclick="editCell(${tableIndex}, ${rowIndex}, ${cellIndex})">${cell}</span>`
+                      : `<span class="edit-label" onclick="editCell(${tableIndex}, '${row.id}', ${cellIndex})">${cell}</span>`
                     }
-                    ${cellIndex === 0 ? `<button class="delete-btn" onclick="deleteRow(${tableIndex}, ${rowIndex})">✕</button>` : ''}
+                    ${cellIndex === 0 ? `<button class="delete-btn" onclick="softDeleteRow(${tableIndex}, '${row.id}')" title="Hide (data preserved)">✕</button>` : ''}
                   </td>
                 `).join('')}
               </tr>
@@ -598,6 +661,16 @@ function renderBuilder() {
         <button class="btn btn-sm btn-primary" onclick="addColumn(${tableIndex})">
           <i class="fas fa-plus"></i> Add Column
         </button>
+        ${deletedRows.length > 0 ? `
+          <button class="btn btn-sm btn-warning" onclick="restoreAllRows(${tableIndex})">
+            <i class="fas fa-undo"></i> Restore Rows (${deletedRows.length})
+          </button>
+        ` : ''}
+        ${deletedColumns.length > 0 ? `
+          <button class="btn btn-sm btn-warning" onclick="restoreAllColumns(${tableIndex})">
+            <i class="fas fa-undo"></i> Restore Columns (${deletedColumns.length})
+          </button>
+        ` : ''}
       </div>
     `;
     grid.appendChild(card);
@@ -617,6 +690,75 @@ function renderBuilder() {
 }
 
 // ========================================
+// SOFT DELETE (Hide with data preservation)
+// ========================================
+
+function softDeleteRow(tableIndex, rowId) {
+  const table = config.tables[tableIndex];
+  const row = table.rows.find(r => r.id === rowId);
+  if (row) {
+    row.deleted = true;
+    renderBuilder();
+    showToast(`🗑️ Row hidden (data preserved for Entry page)`);
+  }
+}
+
+function softDeleteColumn(tableIndex, colId) {
+  const table = config.tables[tableIndex];
+  const col = table.columns.find(c => c.id === colId);
+  if (col) {
+    col.deleted = true;
+    renderBuilder();
+    showToast(`🗑️ Column hidden (data preserved for Entry page)`);
+  }
+}
+
+// ========================================
+// RESTORE FUNCTIONS
+// ========================================
+
+function restoreAllRows(tableIndex) {
+  const table = config.tables[tableIndex];
+  table.rows.forEach(row => row.deleted = false);
+  renderBuilder();
+  showToast(`✅ All rows restored`);
+}
+
+function restoreAllColumns(tableIndex) {
+  const table = config.tables[tableIndex];
+  table.columns.forEach(col => col.deleted = false);
+  renderBuilder();
+  showToast(`✅ All columns restored`);
+}
+
+function showDeletedItems(tableIndex) {
+  const table = config.tables[tableIndex];
+  const deletedRows = table.rows.filter(r => r.deleted);
+  const deletedCols = table.columns.filter(c => c.deleted);
+  
+  let message = '📋 HIDDEN ITEMS (Data Preserved)\n\n';
+  message += `Table: ${table.title}\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
+  
+  if (deletedRows.length > 0) {
+    message += `🗑️ HIDDEN ROWS (${deletedRows.length}):\n`;
+    deletedRows.forEach(row => {
+      message += `  • ${row.data.join(' | ')}\n`;
+    });
+    message += '\n';
+  }
+  
+  if (deletedCols.length > 0) {
+    message += `🗑️ HIDDEN COLUMNS (${deletedCols.length}):\n`;
+    deletedCols.forEach(col => {
+      message += `  • ${col.label} (${col.type})\n`;
+    });
+  }
+  
+  alert(message);
+}
+
+// ========================================
 // TABLE OPERATIONS
 // ========================================
 
@@ -626,12 +768,12 @@ function addNewTable() {
     title: 'NEW TABLE',
     icon: 'fa-table',
     columns: [
-      { id: 'col1', label: 'COLUMN 1', type: 'text' },
-      { id: 'col2', label: 'COLUMN 2', type: 'number' }
+      { id: 'col1_' + Date.now(), label: 'COLUMN 1', type: 'text', deleted: false },
+      { id: 'col2_' + Date.now(), label: 'COLUMN 2', type: 'number', deleted: false }
     ],
     rows: [
-      ['Row 1', '0'],
-      ['Row 2', '0']
+      { id: 'row_' + Date.now() + '_1', data: ['Row 1', '0'], deleted: false },
+      { id: 'row_' + Date.now() + '_2', data: ['Row 2', '0'], deleted: false }
     ]
   });
   renderBuilder();
@@ -643,19 +785,14 @@ function deleteTable(index) {
     showToast('⚠️ Cannot delete last table');
     return;
   }
-  if (confirm(`Delete "${config.tables[index].title}"?`)) {
+  if (confirm(`⚠️ Delete table "${config.tables[index].title}"?\n\nData will be preserved in Entry page.`)) {
+    // Soft delete - mark as deleted but keep data
+    config.tables[index].deleted = true;
+    // Actually remove for builder view
     config.tables.splice(index, 1);
     renderBuilder();
-    showToast('🗑️ Table deleted');
+    showToast('🗑️ Table removed from builder (data preserved)');
   }
-}
-
-function updateTableTitle(index, value) {
-  config.tables[index].title = value.toUpperCase();
-}
-
-function updateTableIcon(index, value) {
-  config.tables[index].icon = value;
 }
 
 // ========================================
@@ -664,24 +801,22 @@ function updateTableIcon(index, value) {
 
 function addRow(tableIndex) {
   const table = config.tables[tableIndex];
-  const newRow = table.columns.map(col => col.type === 'select' ? table.columns[0].options?.[0] || 'OPTION' : '0');
-  table.rows.push(newRow);
+  const newRowData = table.columns.map(col => col.type === 'select' ? col.options?.[0] || 'OPTION' : '0');
+  table.rows.push({
+    id: 'row_' + Date.now(),
+    data: newRowData,
+    deleted: false
+  });
   renderBuilder();
   showToast('✅ Row added');
 }
 
-function deleteRow(tableIndex, rowIndex) {
-  if (config.tables[tableIndex].rows.length <= 1) {
-    showToast('⚠️ Cannot delete last row');
-    return;
+function updateCell(tableIndex, rowId, colIndex, value) {
+  const table = config.tables[tableIndex];
+  const row = table.rows.find(r => r.id === rowId);
+  if (row) {
+    row.data[colIndex] = value;
   }
-  config.tables[tableIndex].rows.splice(rowIndex, 1);
-  renderBuilder();
-  showToast('🗑️ Row deleted');
-}
-
-function updateCell(tableIndex, rowIndex, colIndex, value) {
-  config.tables[tableIndex].rows[rowIndex][colIndex] = value;
 }
 
 // ========================================
@@ -691,45 +826,48 @@ function updateCell(tableIndex, rowIndex, colIndex, value) {
 function addColumn(tableIndex) {
   const table = config.tables[tableIndex];
   const colId = 'col_' + Date.now();
-  table.columns.push({ id: colId, label: 'NEW COLUMN', type: 'number' });
-  table.rows.forEach(row => row.push('0'));
+  table.columns.push({ 
+    id: colId, 
+    label: 'NEW COLUMN', 
+    type: 'number', 
+    deleted: false 
+  });
+  table.rows.forEach(row => row.data.push('0'));
   renderBuilder();
   showToast('✅ Column added');
 }
 
-function deleteColumn(tableIndex, colIndex) {
+function editColumnLabel(tableIndex, colId) {
   const table = config.tables[tableIndex];
-  if (table.columns.length <= 2) {
-    showToast('⚠️ Cannot delete - minimum 2 columns');
-    return;
-  }
-  if (confirm('Delete this column?')) {
-    table.columns.splice(colIndex, 1);
-    table.rows.forEach(row => row.splice(colIndex, 1));
-    renderBuilder();
-    showToast('🗑️ Column deleted');
-  }
-}
-
-function editColumnLabel(tableIndex, colIndex) {
-  const table = config.tables[tableIndex];
-  const newLabel = prompt('Enter new column label:', table.columns[colIndex].label);
+  const col = table.columns.find(c => c.id === colId);
+  if (!col) return;
+  const newLabel = prompt('Enter new column label:', col.label);
   if (newLabel && newLabel.trim()) {
-    table.columns[colIndex].label = newLabel.trim().toUpperCase();
+    col.label = newLabel.trim().toUpperCase();
     renderBuilder();
     showToast('✏️ Label updated');
   }
 }
 
-function editCell(tableIndex, rowIndex, colIndex) {
+function editCell(tableIndex, rowId, colIndex) {
   const table = config.tables[tableIndex];
-  const currentValue = table.rows[rowIndex][colIndex];
+  const row = table.rows.find(r => r.id === rowId);
+  if (!row) return;
+  const currentValue = row.data[colIndex];
   const newValue = prompt('Edit cell value:', currentValue);
   if (newValue !== null) {
-    table.rows[rowIndex][colIndex] = newValue;
+    row.data[colIndex] = newValue;
     renderBuilder();
     showToast('✏️ Cell updated');
   }
+}
+
+function updateTableTitle(index, value) {
+  config.tables[index].title = value.toUpperCase();
+}
+
+function updateTableIcon(index, value) {
+  config.tables[index].icon = value;
 }
 
 // ========================================
@@ -814,6 +952,10 @@ function showToast(message) {
 // ========================================
 
 loadConfig();
+
+console.log('🏥 OT DETA Builder Loaded');
+console.log('📌 Data Preservation: ON');
+console.log('🔄 Deleted items keep data for Entry page');
 </script>
 </body>
 </html>
