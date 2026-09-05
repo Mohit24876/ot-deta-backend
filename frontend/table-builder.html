@@ -1,264 +1,819 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
-    <title>Table Builder · OT DETA</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, system-ui, sans-serif; }
-        body { background: #eef3f8; display: flex; justify-content: center; padding: 10px 8px 30px; min-height: 100vh; }
-        .card { max-width: 480px; width: 100%; background: white; border-radius: 24px; box-shadow: 0 8px 24px -6px rgba(0,20,30,0.12); padding: 1rem 0.9rem 1.8rem; }
-        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 2px solid #e6edf4; padding-bottom: 0.5rem; }
-        .header h1 { font-size: 1.2rem; color: #0b2b3c; }
-        .header h1 i { color: #1a7f8c; }
-        .back-btn { background: #eaf1f8; border: none; border-radius: 40px; padding: 0.3rem 0.8rem; font-size: 0.6rem; font-weight: 600; color: #124257; cursor: pointer; text-decoration: none; }
-        .nav-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 0.8rem; padding: 0.4rem 0.6rem; background: #f5faff; border-radius: 16px; border: 1px solid #d0dfec; }
-        .nav-bar a { text-decoration: none; color: #1a7f8c; font-size: 0.6rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 30px; background: white; border: 1px solid #e6edf4; }
-        .nav-bar a:hover { background: #1a7f8c; color: white; border-color: #1a7f8c; }
-        .nav-bar a.active { background: #1a7f8c; color: white; border-color: #1a7f8c; }
-        .btn { border: none; background: #ecf3fa; padding: 8px 14px; border-radius: 60px; font-weight: 700; color: #1b4b5e; display: inline-flex; align-items: center; gap: 6px; font-size: 0.6rem; border: 1px solid transparent; cursor: pointer; transition: 0.1s; }
-        .btn:active { transform: scale(0.95); }
-        .btn-primary { background: #1a7f8c; color: white; }
-        .btn-primary i { color: white; }
-        .btn-success { background: #27ae60; color: white; }
-        .btn-success i { color: white; }
-        .btn-danger { background: #c0392b; color: white; }
-        .btn-danger i { color: white; }
-        .btn-sm { padding: 2px 8px; font-size: 0.5rem; }
-        .table-item { background: #f8faff; border-radius: 16px; border: 1px solid #e6edf4; padding: 0.8rem; margin-bottom: 0.8rem; }
-        .table-item .table-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; }
-        .table-item .table-name { font-size: 0.85rem; font-weight: 700; color: #0e3b4b; }
-        .table-item .table-actions { display: flex; gap: 4px; }
-        .table-item .table-body { padding-left: 0.5rem; }
-        .table-item .section-label { font-size: 0.6rem; font-weight: 700; color: #597a8c; text-transform: uppercase; margin: 0.5rem 0 0.2rem; }
-        .item-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px; border-bottom: 1px solid #e6eef5; }
-        .item-row .name { font-size: 0.7rem; color: #124257; }
-        .item-row .actions { display: flex; gap: 3px; }
-        .add-bar { display: flex; gap: 6px; flex-wrap: wrap; margin: 0.3rem 0; }
-        .add-bar input { flex: 1; min-width: 80px; border: 2px solid #b9d1df; border-radius: 30px; padding: 0.2rem 0.8rem; font-size: 0.65rem; font-weight: 600; color: #124257; background: white; }
-        .add-bar input:focus { border-color: #2f9ba7; outline: none; }
-        .add-table-bar { display: flex; gap: 8px; margin-bottom: 0.8rem; }
-        .add-table-bar input { flex: 1; border: 2px solid #b9d1df; border-radius: 30px; padding: 0.3rem 1rem; font-size: 0.7rem; font-weight: 600; color: #124257; background: white; }
-        .add-table-bar input:focus { border-color: #2f9ba7; outline: none; }
-        .notification { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #1a7f8c; color: white; padding: 12px 24px; border-radius: 40px; font-weight: 600; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; display: none; text-align: center; }
-        .empty-state { color: #597a8c; font-size: 0.65rem; padding: 12px; text-align: center; }
-        .footer-meta { margin-top: 1.5rem; font-size: 0.55rem; color: #95b3c5; display: flex; justify-content: center; border-top: 1px solid #e2ecf5; padding-top: 0.8rem; gap: 12px; flex-wrap: wrap; }
-        .note-box { background: #eaf8f0; border-radius: 12px; padding: 0.5rem 0.8rem; margin-bottom: 0.8rem; border: 1px solid #27ae60; font-size: 0.65rem; color: #1a6b3c; }
-        @media (max-width: 420px) { .card { padding: 0.7rem 0.5rem 1.5rem; } .item-row { flex-wrap: wrap; gap: 4px; } .item-row .actions { width: 100%; justify-content: flex-end; } .add-bar { flex-direction: column; } }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OT DETA · Table Builder</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    }
+
+    body {
+      background: #f4f7fc;
+      padding: 1rem;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      background: white;
+      border-radius: 20px;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    .top-bar .brand {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #0b2b3c;
+    }
+
+    .top-bar .brand i {
+      color: #1a7f8c;
+      margin-right: 10px;
+    }
+
+    .top-bar .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 60px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      transition: 0.15s;
+    }
+
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
+    .btn-primary { background: #1a7f8c; color: white; }
+    .btn-success { background: #27ae60; color: white; }
+    .btn-danger { background: #e74c3c; color: white; }
+    .btn-warning { background: #f39c12; color: white; }
+    .btn-outline { background: transparent; border: 2px solid #d0dfec; color: #1b4b5e; }
+    .btn-sm { padding: 6px 16px; font-size: 0.75rem; }
+
+    /* Builder Grid */
+    .builder-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 1000px) {
+      .builder-grid { grid-template-columns: 1fr; }
+    }
+
+    .builder-card {
+      background: white;
+      border-radius: 24px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    .builder-card .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .builder-card .header h3 {
+      color: #0b2b3c;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+    }
+
+    .builder-card .header h3 i {
+      color: #1a7f8c;
+      margin-right: 8px;
+    }
+
+    /* Table Preview */
+    .table-preview {
+      overflow-x: auto;
+      border: 2px dashed #d0dfec;
+      border-radius: 16px;
+      padding: 0.5rem;
+      min-height: 100px;
+      background: #fafcfe;
+      transition: 0.3s;
+    }
+
+    .table-preview:hover {
+      border-color: #1a7f8c;
+    }
+
+    .table-preview table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .table-preview th {
+      background: #eaf1f8;
+      padding: 8px 12px;
+      text-align: center;
+      font-weight: 600;
+      color: #124257;
+      border-bottom: 2px solid #cbdae6;
+      position: relative;
+    }
+
+    .table-preview td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #dde6ef;
+      text-align: center;
+    }
+
+    .table-preview .drag-handle {
+      cursor: move;
+      color: #b9d1df;
+      font-size: 0.7rem;
+      padding: 0 4px;
+    }
+
+    .table-preview .drag-handle:hover {
+      color: #1a7f8c;
+    }
+
+    /* Builder Controls */
+    .builder-controls {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .builder-controls .input-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #f4f7fc;
+      padding: 4px 12px 4px 16px;
+      border-radius: 60px;
+      border: 1px solid #dde6ef;
+    }
+
+    .builder-controls .input-group input {
+      border: none;
+      background: transparent;
+      padding: 6px 4px;
+      font-size: 0.85rem;
+      width: 120px;
+      outline: none;
+    }
+
+    .builder-controls .input-group input:focus {
+      border-bottom: 2px solid #1a7f8c;
+    }
+
+    .delete-btn {
+      background: transparent;
+      border: none;
+      color: #e74c3c;
+      cursor: pointer;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: 0.15s;
+      opacity: 0.5;
+    }
+
+    .delete-btn:hover {
+      opacity: 1;
+      background: #fde8e8;
+    }
+
+    .edit-label {
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: 0.15s;
+    }
+
+    .edit-label:hover {
+      background: #e8f0fe;
+      outline: 2px dashed #1a7f8c;
+    }
+
+    /* Tabs for tables */
+    .tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      padding: 8px 20px;
+      background: #eaf1f8;
+      border: none;
+      border-radius: 60px;
+      font-weight: 600;
+      color: #597a8c;
+      cursor: pointer;
+      transition: 0.15s;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+
+    .tab.active {
+      background: #1a7f8c;
+      color: white;
+    }
+
+    .tab:hover:not(.active) {
+      background: #d0dfec;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #1a7f8c;
+      color: white;
+      padding: 16px 28px;
+      border-radius: 60px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      font-weight: 600;
+      text-transform: uppercase;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.4s ease;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast i { margin-right: 12px; }
+
+    /* JSON Editor Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 28px;
+      padding: 2rem;
+      max-width: 800px;
+      width: 95%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal textarea {
+      width: 100%;
+      height: 400px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      padding: 1rem;
+      border: 1px solid #dde6ef;
+      border-radius: 16px;
+      resize: vertical;
+    }
+
+    .modal .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 1rem;
+      justify-content: flex-end;
+    }
+
+    @media (max-width: 750px) {
+      .top-bar { flex-direction: column; align-items: stretch; }
+      .builder-card { padding: 1rem; }
+    }
+  </style>
 </head>
 <body>
-<div class="card">
-    <div id="notification" class="notification"></div>
-    <div class="header">
-        <h1><i class="fas fa-table"></i> TABLE BUILDER</h1>
-        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> BACK</a>
-    </div>
-    <div class="nav-bar">
-        <a href="index.html">🏠 HOME</a>
-        <a href="entry.html">📝 ENTRY</a>
-        <a href="table-builder.html" class="active">📊 BUILDER</a>
-        <a href="summary-builder.html">📊 SUMMARY</a>
-        <a href="whatsapp-send.html">📱 WHATSAPP</a>
-    </div>
-    <div class="note-box">
-        <i class="fas fa-info-circle"></i> Build your tables here. Changes reflect instantly on the Entry page!
-    </div>
 
-    <div class="add-table-bar">
-        <input type="text" id="newTableName" placeholder="New table name..." />
-        <button class="btn btn-primary" id="addTableBtn"><i class="fas fa-plus"></i> ADD</button>
-    </div>
-    <div id="tablesContainer"><div class="empty-state">Loading tables...</div></div>
+<div class="container">
 
-    <div class="footer-meta">
-        <span><i class="fas fa-database"></i> Stored in Supabase</span>
-        <span><i class="fas fa-sync"></i> Auto-updates Entry page</span>
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="brand">
+      <i class="fas fa-tools"></i> Table Builder
     </div>
+    <div class="actions">
+      <button class="btn btn-primary btn-sm" onclick="saveConfig()">
+        <i class="fas fa-save"></i> Save & Apply
+      </button>
+      <button class="btn btn-warning btn-sm" onclick="exportConfig()">
+        <i class="fas fa-file-export"></i> Export
+      </button>
+      <button class="btn btn-outline btn-sm" onclick="importConfig()">
+        <i class="fas fa-file-import"></i> Import
+      </button>
+      <button class="btn btn-outline btn-sm" onclick="openJsonEditor()">
+        <i class="fas fa-code"></i> JSON
+      </button>
+      <button class="btn btn-danger btn-sm" onclick="resetConfig()">
+        <i class="fas fa-undo"></i> Reset
+      </button>
+      <a href="entry.html" class="btn btn-primary btn-sm">
+        <i class="fas fa-arrow-right"></i> Go to Entry
+      </a>
+    </div>
+  </div>
+
+  <!-- Builder Grid -->
+  <div class="builder-grid" id="builderGrid">
+    <!-- Tables will be rendered here -->
+  </div>
+
+  <!-- JSON Editor Modal -->
+  <div class="modal-overlay" id="jsonModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-code"></i> Edit JSON Configuration</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeJsonEditor()">✕</button>
+      </div>
+      <textarea id="jsonEditor"></textarea>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeJsonEditor()">Cancel</button>
+        <button class="btn btn-primary" onclick="applyJsonConfig()">Apply Configuration</button>
+      </div>
+    </div>
+  </div>
+
 </div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
 <script>
-(function() {
-    const API_BASE_URL = 'https://ot-deta-backend.onrender.com/api';
+// ========================================
+// DEFAULT CONFIGURATION
+// ========================================
 
-    function showNotification(msg, success = true) {
-        const el = document.getElementById('notification');
-        if (!el) return;
-        el.textContent = msg;
-        el.style.display = 'block';
-        el.style.background = success ? '#1a7f8c' : '#c0392b';
-        clearTimeout(el._timeout);
-        el._timeout = setTimeout(() => { el.style.display = 'none'; }, 3000);
+const DEFAULT_CONFIG = {
+  tables: [
+    {
+      id: 'lscsTable',
+      title: 'LSCS & MAJOR OT',
+      icon: 'fa-procedures',
+      columns: [
+        { id: 'doctor', label: 'DR.NAME', type: 'text' },
+        { id: 'lscs', label: 'LSCS', type: 'number' },
+        { id: 'de', label: 'D/E', type: 'number' },
+        { id: 'ne', label: 'N/E', type: 'number' },
+        { id: 'plan', label: 'PLAN', type: 'number' },
+        { id: 'abtl', label: 'ABTL', type: 'number' },
+        { id: 'ppiucd', label: 'PPIUCD', type: 'number' }
+      ],
+      rows: [
+        ['DR. A. SHARMA', '1', '2', '1', '1', '0', '1'],
+        ['DR. B. MEHTA', '2', '1', '2', '0', '1', '0'],
+        ['DR. C. NAIR', '0', '1', '1', '1', '1', '0'],
+        ['DR. D. PATIL', '1', '0', '0', '2', '1', '1']
+      ]
+    },
+    {
+      id: 'otherMajorTable',
+      title: 'OTHER MAJOR OT',
+      icon: 'fa-hospital-user',
+      columns: [
+        { id: 'dept', label: 'DEPARTMENT', type: 'text' },
+        { id: 'count', label: 'COUNT', type: 'number' },
+        { id: 'doctor', label: 'DR. NAME', type: 'select', options: ['DR. A. SHARMA', 'DR. B. MEHTA', 'DR. C. NAIR', 'DR. D. PATIL', 'DR. E. RAO', 'DR. F. KHAN', 'DR. G. LEE', 'DR. H. SEN', 'MULTIPLE'] }
+      ],
+      rows: [
+        ['FTG', '3', 'MULTIPLE'],
+        ['ENT', '2', 'MULTIPLE'],
+        ['EYE', '1', 'MULTIPLE'],
+        ['FTS', '2', 'MULTIPLE'],
+        ['LTL', '0', 'MULTIPLE'],
+        ['ORTHO', '1', 'MULTIPLE']
+      ]
+    },
+    {
+      id: 'anesTable',
+      title: 'ANESTHESIA DETA ENTRY',
+      icon: 'fa-syringe',
+      columns: [
+        { id: 'doctor', label: 'DR.NAME', type: 'text' },
+        { id: 'de', label: 'D/E', type: 'number' },
+        { id: 'ne', label: 'N/E', type: 'number' },
+        { id: 'plan', label: 'PLAN', type: 'number' },
+        { id: 'sa', label: 'S/A', type: 'number' },
+        { id: 'ga', label: 'GA', type: 'number' },
+        { id: 'sga', label: 'SGA', type: 'number' },
+        { id: 'block', label: 'BLOCK', type: 'number' },
+        { id: 'other', label: 'OTHER', type: 'number' }
+      ],
+      rows: [
+        ['DR. E. RAO', '1', '0', '2', '1', '1', '0', '0', '1'],
+        ['DR. F. KHAN', '0', '1', '1', '0', '2', '1', '0', '0'],
+        ['DR. G. LEE', '2', '1', '0', '1', '0', '0', '1', '0'],
+        ['DR. H. SEN', '1', '0', '0', '0', '1', '1', '1', '0']
+      ]
+    },
+    {
+      id: 'minorTable',
+      title: 'MINOR OR',
+      icon: 'fa-bolt',
+      columns: [
+        { id: 'specialty', label: 'SPECIALTY', type: 'text' },
+        { id: 'count', label: 'COUNT', type: 'number' },
+        { id: 'notes', label: 'NOTES', type: 'text' }
+      ],
+      rows: [
+        ['FTG', '4', '—'],
+        ['ENT', '2', '—'],
+        ['EYE', '1', '—'],
+        ['FTS', '3', '—'],
+        ['ORTHO', '2', '—']
+      ]
     }
+  ]
+};
 
-    async function fetchApi(url, options = {}) {
-        try { const res = await fetch(url, options); return await res.json(); }
-        catch (e) { console.error('API Error:', e); return { status: 'error', detail: 'Network error' }; }
+// ========================================
+// STATE
+// ========================================
+
+let config = {};
+
+function loadConfig() {
+  const saved = localStorage.getItem('otDetaBuilderConfig');
+  if (saved) {
+    try {
+      config = JSON.parse(saved);
+    } catch(e) {
+      config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
     }
+  } else {
+    config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+  }
+  renderBuilder();
+}
 
-    // ============================================
-    // TABLES
-    // ============================================
-    async function loadTables() {
-        const res = await fetchApi(`${API_BASE_URL}/dynamic-tables/all`);
-        const container = document.getElementById('tablesContainer');
-        if (res.status !== 'success' || !res.data || res.data.length === 0) {
-            container.innerHTML = '<div class="empty-state">No tables created yet. Add one above!</div>';
-            return;
-        }
-        let html = '';
-        for (const table of res.data) {
-            const rows = await fetchApi(`${API_BASE_URL}/table-rows/${table.id}`);
-            const columns = await fetchApi(`${API_BASE_URL}/table-columns/${table.id}`);
-            html += `
-                <div class="table-item" data-table-id="${table.id}">
-                    <div class="table-header">
-                        <span class="table-name">📋 ${table.name}</span>
-                        <div class="table-actions">
-                            <button class="btn btn-warning btn-sm" onclick="renameTable('${table.id}','${table.name}')"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteTable('${table.id}','${table.name}')"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                    <div class="table-body">
-                        <div class="section-label">👨‍⚕️ ROWS</div>
-                        ${rows.data && rows.data.length > 0 ? rows.data.map(r => `
-                            <div class="item-row">
-                                <span class="name">${r.row_name}</span>
-                                <div class="actions">
-                                    <button class="btn btn-warning btn-sm" onclick="editRow('${r.id}','${r.row_name}')"><i class="fas fa-edit"></i></button>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteRow('${r.id}')"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                        `).join('') : '<div class="empty-state" style="padding:4px;">No rows</div>'}
-                        <div class="add-bar">
-                            <input type="text" id="rowInput_${table.id}" placeholder="Add row..." />
-                            <button class="btn btn-success btn-sm" onclick="addRow('${table.id}')"><i class="fas fa-plus"></i> ADD</button>
-                        </div>
-                        <div class="section-label" style="margin-top:0.5rem;">📊 COLUMNS</div>
-                        ${columns.data && columns.data.length > 0 ? columns.data.map(c => `
-                            <div class="item-row">
-                                <span class="name">${c.column_name}</span>
-                                <div class="actions">
-                                    <button class="btn btn-warning btn-sm" onclick="editColumn('${c.id}','${c.column_name}')"><i class="fas fa-edit"></i></button>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteColumn('${c.id}')"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                        `).join('') : '<div class="empty-state" style="padding:4px;">No columns</div>'}
-                        <div class="add-bar">
-                            <input type="text" id="colInput_${table.id}" placeholder="Add column..." />
-                            <button class="btn btn-success btn-sm" onclick="addColumn('${table.id}')"><i class="fas fa-plus"></i> ADD</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-        container.innerHTML = html;
-    }
+function saveConfig() {
+  localStorage.setItem('otDetaBuilderConfig', JSON.stringify(config));
+  // Save to entry page storage
+  localStorage.setItem('otDetaEntryConfig', JSON.stringify(config));
+  showToast('✅ Configuration saved! Entry page will reflect changes.');
+}
 
-    document.getElementById('addTableBtn').addEventListener('click', async function() {
-        const input = document.getElementById('newTableName');
-        const name = input.value.trim();
-        if (!name) { showNotification('⚠️ Enter a table name', false); return; }
-        const res = await fetchApi(`${API_BASE_URL}/dynamic-tables/`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name })
-        });
-        if (res.status === 'success') { showNotification('✅ Table created!'); input.value = ''; loadTables(); }
-        else { showNotification('❌ Error creating table', false); }
-    });
+function resetConfig() {
+  if (confirm('Reset to default configuration?')) {
+    config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+    renderBuilder();
+    saveConfig();
+    showToast('🔄 Reset to default');
+  }
+}
 
-    window.renameTable = function(tableId, currentName) {
-        const newName = prompt('Enter new table name:', currentName);
-        if (!newName || newName === currentName) return;
-        fetchApi(`${API_BASE_URL}/dynamic-tables/${tableId}`, {
-            method: 'PUT', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: newName })
-        }).then(res => {
-            if (res.status === 'success') { showNotification('✅ Table renamed!'); loadTables(); }
-            else { showNotification('❌ Error renaming table', false); }
-        });
+// ========================================
+// RENDER BUILDER
+// ========================================
+
+function renderBuilder() {
+  const grid = document.getElementById('builderGrid');
+  grid.innerHTML = '';
+
+  config.tables.forEach((table, tableIndex) => {
+    const card = document.createElement('div');
+    card.className = 'builder-card';
+    card.innerHTML = `
+      <div class="header">
+        <h3><i class="fas ${table.icon}"></i> ${table.title}</h3>
+        <div>
+          <button class="btn btn-sm btn-outline" onclick="addColumn(${tableIndex})">
+            <i class="fas fa-plus"></i> Column
+          </button>
+          <button class="btn btn-sm btn-outline" onclick="addRow(${tableIndex})">
+            <i class="fas fa-plus"></i> Row
+          </button>
+          <button class="btn btn-sm btn-danger" onclick="deleteTable(${tableIndex})">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="table-preview">
+        <table>
+          <thead>
+            <tr>
+              ${table.columns.map((col, colIndex) => `
+                <th>
+                  <span class="edit-label" onclick="editColumnLabel(${tableIndex}, ${colIndex})">${col.label}</span>
+                  <span class="drag-handle"><i class="fas fa-grip-vertical"></i></span>
+                  <button class="delete-btn" onclick="deleteColumn(${tableIndex}, ${colIndex})">✕</button>
+                </th>
+              `).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            ${table.rows.map((row, rowIndex) => `
+              <tr>
+                ${row.map((cell, cellIndex) => `
+                  <td>
+                    ${table.columns[cellIndex]?.type === 'select' 
+                      ? `<select onchange="updateCell(${tableIndex}, ${rowIndex}, ${cellIndex}, this.value)">
+                          ${table.columns[cellIndex].options.map(opt => 
+                            `<option ${opt === cell ? 'selected' : ''}>${opt}</option>`
+                          ).join('')}
+                        </select>`
+                      : `<span class="edit-label" onclick="editCell(${tableIndex}, ${rowIndex}, ${cellIndex})">${cell}</span>`
+                    }
+                    ${cellIndex === 0 ? `<button class="delete-btn" onclick="deleteRow(${tableIndex}, ${rowIndex})">✕</button>` : ''}
+                  </td>
+                `).join('')}
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="builder-controls">
+        <div class="input-group">
+          <i class="fas fa-pen"></i>
+          <input type="text" value="${table.title}" 
+                 onchange="updateTableTitle(${tableIndex}, this.value)" 
+                 placeholder="Table Title" />
+        </div>
+        <div class="input-group">
+          <i class="fas fa-hashtag"></i>
+          <input type="text" value="${table.icon}" 
+                 onchange="updateTableIcon(${tableIndex}, this.value)" 
+                 placeholder="Icon" style="width:80px;" />
+        </div>
+        <button class="btn btn-sm btn-success" onclick="addRow(${tableIndex})">
+          <i class="fas fa-plus"></i> Add Row
+        </button>
+        <button class="btn btn-sm btn-primary" onclick="addColumn(${tableIndex})">
+          <i class="fas fa-plus"></i> Add Column
+        </button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Add "Add New Table" button
+  const addCard = document.createElement('div');
+  addCard.className = 'builder-card';
+  addCard.style.cssText = 'border: 3px dashed #d0dfec; display: flex; align-items: center; justify-content: center; min-height: 200px; cursor: pointer; background: #fafcfe;';
+  addCard.innerHTML = `
+    <div style="text-align: center; color: #597a8c;" onclick="addNewTable()">
+      <i class="fas fa-plus-circle" style="font-size: 3rem; color: #1a7f8c;"></i>
+      <p style="margin-top: 0.5rem; font-weight: 600;">Add New Table</p>
+    </div>
+  `;
+  grid.appendChild(addCard);
+}
+
+// ========================================
+// TABLE OPERATIONS
+// ========================================
+
+function addNewTable() {
+  config.tables.push({
+    id: 'table_' + Date.now(),
+    title: 'NEW TABLE',
+    icon: 'fa-table',
+    columns: [
+      { id: 'col1', label: 'COLUMN 1', type: 'text' },
+      { id: 'col2', label: 'COLUMN 2', type: 'number' }
+    ],
+    rows: [
+      ['Row 1', '0'],
+      ['Row 2', '0']
+    ]
+  });
+  renderBuilder();
+  showToast('✅ New table added');
+}
+
+function deleteTable(index) {
+  if (config.tables.length <= 1) {
+    showToast('⚠️ Cannot delete last table');
+    return;
+  }
+  if (confirm(`Delete "${config.tables[index].title}"?`)) {
+    config.tables.splice(index, 1);
+    renderBuilder();
+    showToast('🗑️ Table deleted');
+  }
+}
+
+function updateTableTitle(index, value) {
+  config.tables[index].title = value.toUpperCase();
+}
+
+function updateTableIcon(index, value) {
+  config.tables[index].icon = value;
+}
+
+// ========================================
+// ROW OPERATIONS
+// ========================================
+
+function addRow(tableIndex) {
+  const table = config.tables[tableIndex];
+  const newRow = table.columns.map(col => col.type === 'select' ? table.columns[0].options?.[0] || 'OPTION' : '0');
+  table.rows.push(newRow);
+  renderBuilder();
+  showToast('✅ Row added');
+}
+
+function deleteRow(tableIndex, rowIndex) {
+  if (config.tables[tableIndex].rows.length <= 1) {
+    showToast('⚠️ Cannot delete last row');
+    return;
+  }
+  config.tables[tableIndex].rows.splice(rowIndex, 1);
+  renderBuilder();
+  showToast('🗑️ Row deleted');
+}
+
+function updateCell(tableIndex, rowIndex, colIndex, value) {
+  config.tables[tableIndex].rows[rowIndex][colIndex] = value;
+}
+
+// ========================================
+// COLUMN OPERATIONS
+// ========================================
+
+function addColumn(tableIndex) {
+  const table = config.tables[tableIndex];
+  const colId = 'col_' + Date.now();
+  table.columns.push({ id: colId, label: 'NEW COLUMN', type: 'number' });
+  table.rows.forEach(row => row.push('0'));
+  renderBuilder();
+  showToast('✅ Column added');
+}
+
+function deleteColumn(tableIndex, colIndex) {
+  const table = config.tables[tableIndex];
+  if (table.columns.length <= 2) {
+    showToast('⚠️ Cannot delete - minimum 2 columns');
+    return;
+  }
+  if (confirm('Delete this column?')) {
+    table.columns.splice(colIndex, 1);
+    table.rows.forEach(row => row.splice(colIndex, 1));
+    renderBuilder();
+    showToast('🗑️ Column deleted');
+  }
+}
+
+function editColumnLabel(tableIndex, colIndex) {
+  const table = config.tables[tableIndex];
+  const newLabel = prompt('Enter new column label:', table.columns[colIndex].label);
+  if (newLabel && newLabel.trim()) {
+    table.columns[colIndex].label = newLabel.trim().toUpperCase();
+    renderBuilder();
+    showToast('✏️ Label updated');
+  }
+}
+
+function editCell(tableIndex, rowIndex, colIndex) {
+  const table = config.tables[tableIndex];
+  const currentValue = table.rows[rowIndex][colIndex];
+  const newValue = prompt('Edit cell value:', currentValue);
+  if (newValue !== null) {
+    table.rows[rowIndex][colIndex] = newValue;
+    renderBuilder();
+    showToast('✏️ Cell updated');
+  }
+}
+
+// ========================================
+// JSON EDITOR
+// ========================================
+
+function openJsonEditor() {
+  document.getElementById('jsonEditor').value = JSON.stringify(config, null, 2);
+  document.getElementById('jsonModal').classList.add('active');
+}
+
+function closeJsonEditor() {
+  document.getElementById('jsonModal').classList.remove('active');
+}
+
+function applyJsonConfig() {
+  try {
+    const parsed = JSON.parse(document.getElementById('jsonEditor').value);
+    config = parsed;
+    renderBuilder();
+    saveConfig();
+    closeJsonEditor();
+    showToast('✅ Configuration applied');
+  } catch(e) {
+    showToast('❌ Invalid JSON format');
+  }
+}
+
+// ========================================
+// EXPORT / IMPORT
+// ========================================
+
+function exportConfig() {
+  const blob = new Blob([JSON.stringify(config, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'ot_deta_config.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📥 Config exported');
+}
+
+function importConfig() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      try {
+        const parsed = JSON.parse(event.target.result);
+        config = parsed;
+        renderBuilder();
+        saveConfig();
+        showToast('📤 Config imported');
+      } catch(err) {
+        showToast('❌ Invalid file format');
+      }
     };
+    reader.readAsText(file);
+  };
+  input.click();
+}
 
-    window.deleteTable = function(tableId, tableName) {
-        if (!confirm(`⚠️ Delete "${tableName}"?\n\nPast records will NOT be affected.`)) return;
-        fetchApi(`${API_BASE_URL}/dynamic-tables/${tableId}`, { method: 'DELETE' })
-            .then(res => {
-                if (res.status === 'success') { showNotification('✅ Table deactivated'); loadTables(); }
-                else { showNotification('❌ Error deleting table', false); }
-            });
-    };
+// ========================================
+// TOAST
+// ========================================
 
-    window.addRow = async function(tableId) {
-        const input = document.getElementById(`rowInput_${tableId}`);
-        const name = input.value.trim();
-        if (!name) { showNotification('⚠️ Enter a row name', false); return; }
-        const res = await fetchApi(`${API_BASE_URL}/table-rows/`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ table_id: tableId, row_name: name })
-        });
-        if (res.status === 'success') { showNotification('✅ Row added!'); input.value = ''; loadTables(); }
-        else { showNotification('❌ Error adding row', false); }
-    };
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.innerHTML = message;
+  toast.classList.add('show');
+  clearTimeout(toast.timeout);
+  toast.timeout = setTimeout(() => toast.classList.remove('show'), 3000);
+}
 
-    window.editRow = function(rowId, currentName) {
-        const newName = prompt('Enter new row name:', currentName);
-        if (!newName || newName === currentName) return;
-        fetchApi(`${API_BASE_URL}/table-rows/${rowId}`, {
-            method: 'PUT', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ row_name: newName })
-        }).then(res => {
-            if (res.status === 'success') { showNotification('✅ Row updated!'); loadTables(); }
-            else { showNotification('❌ Error updating row', false); }
-        });
-    };
+// ========================================
+// INIT
+// ========================================
 
-    window.deleteRow = function(rowId) {
-        if (!confirm('Delete this row?')) return;
-        fetchApi(`${API_BASE_URL}/table-rows/${rowId}`, { method: 'DELETE' })
-            .then(res => {
-                if (res.status === 'success') { showNotification('✅ Row deactivated'); loadTables(); }
-                else { showNotification('❌ Error deleting row', false); }
-            });
-    };
-
-    window.addColumn = async function(tableId) {
-        const input = document.getElementById(`colInput_${tableId}`);
-        const name = input.value.trim();
-        if (!name) { showNotification('⚠️ Enter a column name', false); return; }
-        const res = await fetchApi(`${API_BASE_URL}/table-columns/`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ table_id: tableId, column_name: name })
-        });
-        if (res.status === 'success') { showNotification('✅ Column added!'); input.value = ''; loadTables(); }
-        else { showNotification('❌ Error adding column', false); }
-    };
-
-    window.editColumn = function(columnId, currentName) {
-        const newName = prompt('Enter new column name:', currentName);
-        if (!newName || newName === currentName) return;
-        fetchApi(`${API_BASE_URL}/table-columns/${columnId}`, {
-            method: 'PUT', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ column_name: newName })
-        }).then(res => {
-            if (res.status === 'success') { showNotification('✅ Column updated!'); loadTables(); }
-            else { showNotification('❌ Error updating column', false); }
-        });
-    };
-
-    window.deleteColumn = function(columnId) {
-        if (!confirm('Delete this column?')) return;
-        fetchApi(`${API_BASE_URL}/table-columns/${columnId}`, { method: 'DELETE' })
-            .then(res => {
-                if (res.status === 'success') { showNotification('✅ Column deactivated'); loadTables(); }
-                else { showNotification('❌ Error deleting column', false); }
-            });
-    };
-
-    // ============================================
-    // INIT
-    // ============================================
-    loadTables();
-})();
+loadConfig();
 </script>
 </body>
 </html>
