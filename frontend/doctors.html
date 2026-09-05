@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>Doctor Management · OT DETA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, system-ui, sans-serif; }
+        body { background: #eef3f8; display: flex; justify-content: center; padding: 10px 8px 30px; min-height: 100vh; }
+        .card { max-width: 480px; width: 100%; background: white; border-radius: 24px; box-shadow: 0 8px 24px -6px rgba(0,20,30,0.12); padding: 1rem 0.9rem 1.8rem; }
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 2px solid #e6edf4; padding-bottom: 0.5rem; }
+        .header h1 { font-size: 1.2rem; color: #0b2b3c; }
+        .header h1 i { color: #1a7f8c; }
+        .back-btn { background: #eaf1f8; border: none; border-radius: 40px; padding: 0.3rem 0.8rem; font-size: 0.6rem; font-weight: 600; color: #124257; cursor: pointer; text-decoration: none; }
+        .nav-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 0.8rem; padding: 0.4rem 0.6rem; background: #f5faff; border-radius: 16px; border: 1px solid #d0dfec; }
+        .nav-bar a { text-decoration: none; color: #1a7f8c; font-size: 0.6rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 30px; background: white; border: 1px solid #e6edf4; }
+        .nav-bar a:hover { background: #1a7f8c; color: white; border-color: #1a7f8c; }
+        .nav-bar a.active { background: #1a7f8c; color: white; border-color: #1a7f8c; }
+        .btn { border: none; background: #ecf3fa; padding: 8px 14px; border-radius: 60px; font-weight: 700; color: #1b4b5e; display: inline-flex; align-items: center; gap: 6px; font-size: 0.6rem; border: 1px solid transparent; cursor: pointer; transition: 0.1s; }
+        .btn:active { transform: scale(0.95); }
+        .btn-primary { background: #1a7f8c; color: white; }
+        .btn-primary i { color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-success i { color: white; }
+        .btn-danger { background: #c0392b; color: white; }
+        .btn-danger i { color: white; }
+        .btn-sm { padding: 2px 8px; font-size: 0.5rem; }
+        .filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+        .filter-bar .btn { padding: 4px 12px; font-size: 0.6rem; }
+        .filter-bar .btn.active { background: #1a7f8c; color: white; }
+        .form-box { background: white; border-radius: 12px; padding: 0.8rem; border: 2px solid #2f9ba7; margin-bottom: 10px; display: none; }
+        .form-box .form-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+        .form-box input { flex: 1; min-width: 100px; border: 2px solid #b9d1df; border-radius: 30px; padding: 0.3rem 1rem; font-size: 0.7rem; font-weight: 600; color: #124257; background: white; }
+        .doctor-list-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 6px; border-bottom: 1px solid #e6eef5; }
+        .doctor-list-item.inactive { opacity: 0.6; }
+        .doctor-list-item .info { display: flex; flex-wrap: wrap; gap: 4px 12px; flex: 1; }
+        .doctor-list-item .info .name { font-size: 0.75rem; font-weight: 700; color: #0e3b4b; }
+        .doctor-list-item .info .specialty { font-size: 0.65rem; color: #597a8c; }
+        .doctor-list-item .info .status { font-size: 0.6rem; font-weight: 600; }
+        .doctor-list-item .info .status.active { color: #27ae60; }
+        .doctor-list-item .info .status.inactive { color: #e74c3c; }
+        .doctor-list-item .actions { display: flex; gap: 4px; }
+        .notification { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #1a7f8c; color: white; padding: 12px 24px; border-radius: 40px; font-weight: 600; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; display: none; text-align: center; }
+        .empty-state { color: #597a8c; font-size: 0.7rem; padding: 12px 8px; text-align: center; }
+        .footer-meta { margin-top: 1.5rem; font-size: 0.55rem; color: #95b3c5; display: flex; justify-content: center; border-top: 1px solid #e2ecf5; padding-top: 0.8rem; gap: 12px; flex-wrap: wrap; }
+        @media (max-width: 420px) { .card { padding: 0.7rem 0.5rem 1.5rem; } .doctor-list-item { flex-wrap: wrap; gap: 6px; } .doctor-list-item .actions { width: 100%; justify-content: flex-end; } .form-box .form-row { flex-direction: column; align-items: stretch; } }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div id="notification" class="notification"></div>
+    <div class="header">
+        <h1><i class="fas fa-user-md"></i> DOCTOR MANAGEMENT</h1>
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> BACK</a>
+    </div>
+    <div class="nav-bar">
+        <a href="index.html">🏠 HOME</a>
+        <a href="entry.html">📝 ENTRY</a>
+        <a href="doctors.html" class="active">👨‍⚕️ DOCTORS</a>
+        <a href="config.html">⚙️ CONFIG</a>
+        <a href="table-builder.html">📊 BUILDER</a>
+    </div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:0.8rem;">
+        <button class="btn btn-primary" id="showAddBtn"><i class="fas fa-plus"></i> ADD DOCTOR</button>
+        <span style="margin-left:auto;font-size:0.6rem;background:#eaf1f8;padding:0.1rem 0.8rem;border-radius:30px;">👨‍⚕️ <span id="activeCount">0</span> Active</span>
+    </div>
+
+    <div class="form-box" id="addForm">
+        <div class="form-row">
+            <input type="text" id="addName" placeholder="Doctor Name" />
+            <button class="btn btn-success" id="saveBtn"><i class="fas fa-save"></i> SAVE</button>
+            <button class="btn" id="cancelAddBtn"><i class="fas fa-times"></i> CANCEL</button>
+        </div>
+    </div>
+
+    <div class="filter-bar">
+        <button class="btn active" data-filter="all">ALL</button>
+        <button class="btn" data-filter="active">✅ ACTIVE</button>
+        <button class="btn" data-filter="inactive">❌ INACTIVE</button>
+    </div>
+
+    <div id="doctorList"><div class="empty-state">Loading doctors...</div></div>
+
+    <div class="footer-meta">
+        <span><i class="fas fa-info-circle"></i> Removing a doctor hides them from OT dropdowns</span>
+        <span><i class="fas fa-history"></i> Past records are never deleted</span>
+    </div>
+</div>
+<script>
+(function() {
+    const API_BASE_URL = 'https://ot-deta-backend.onrender.com/api';
+    let allDoctors = [];
+    let currentFilter = 'all';
+
+    function showNotification(msg, success = true) {
+        const el = document.getElementById('notification');
+        if (!el) return;
+        el.textContent = msg;
+        el.style.display = 'block';
+        el.style.background = success ? '#1a7f8c' : '#c0392b';
+        clearTimeout(el._timeout);
+        el._timeout = setTimeout(() => { el.style.display = 'none'; }, 3000);
+    }
+
+    async function fetchAllDoctors() {
+        try {
+            const res = await fetch(`${API_BASE_URL}/doctors/all`);
+            const data = await res.json();
+            if (data.status === 'success') {
+                allDoctors = data.data || [];
+                renderDoctors();
+                updateActiveCount();
+                return allDoctors;
+            }
+            return [];
+        } catch (e) {
+            console.error('Error fetching doctors:', e);
+            return [];
+        }
+    }
+
+    async function addDoctor(name) {
+        try {
+            const res = await fetch(`${API_BASE_URL}/doctors/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, is_active: true })
+            });
+            return await res.json();
+        } catch (e) {
+            console.error('Error adding doctor:', e);
+            return null;
+        }
+    }
+
+    async function deleteDoctor(id) {
+        try {
+            const res = await fetch(`${API_BASE_URL}/doctors/${id}`, {
+                method: 'DELETE'
+            });
+            return await res.json();
+        } catch (e) {
+            console.error('Error deleting doctor:', e);
+            return null;
+        }
+    }
+
+    function renderDoctors() {
+        const container = document.getElementById('doctorList');
+        if (!container) return;
+
+        let filtered = allDoctors;
+        if (currentFilter === 'active') {
+            filtered = allDoctors.filter(d => d.is_active === true);
+        } else if (currentFilter === 'inactive') {
+            filtered = allDoctors.filter(d => d.is_active === false);
+        }
+
+        if (!filtered.length) {
+            container.innerHTML = '<div class="empty-state">No doctors found</div>';
+            return;
+        }
+
+        container.innerHTML = filtered.map(doc => `
+            <div class="doctor-list-item ${!doc.is_active ? 'inactive' : ''}">
+                <div class="info">
+                    <span class="name">${doc.name}</span>
+                    <span class="specialty">${doc.specialty || 'General'}</span>
+                    <span class="status ${doc.is_active ? 'active' : 'inactive'}">
+                        ${doc.is_active ? '✅ ACTIVE' : '❌ INACTIVE'}
+                    </span>
+                </div>
+                <div class="actions">
+                    ${doc.is_active 
+                        ? `<button class="btn btn-danger btn-sm" onclick="removeDoctor('${doc.id}')"><i class="fas fa-trash"></i></button>`
+                        : `<button class="btn btn-success btn-sm" onclick="reactivateDoctor('${doc.id}')"><i class="fas fa-undo"></i></button>`
+                    }
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function updateActiveCount() {
+        const active = allDoctors.filter(d => d.is_active === true).length;
+        document.getElementById('activeCount').textContent = active;
+    }
+
+    document.querySelectorAll('.filter-bar .btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.filter-bar .btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentFilter = this.dataset.filter;
+            renderDoctors();
+        });
+    });
+
+    document.getElementById('showAddBtn')?.addEventListener('click', function() {
+        document.getElementById('addForm').style.display = 'block';
+        document.getElementById('addName').focus();
+    });
+
+    document.getElementById('cancelAddBtn')?.addEventListener('click', function() {
+        document.getElementById('addForm').style.display = 'none';
+        document.getElementById('addName').value = '';
+    });
+
+    document.getElementById('saveBtn')?.addEventListener('click', async function() {
+        const name = document.getElementById('addName').value.trim();
+        if (!name) { showNotification('⚠️ Please enter doctor name', false); return; }
+        const result = await addDoctor(name);
+        if (result?.status === 'success') {
+            showNotification('✅ Doctor added successfully!');
+            document.getElementById('addForm').style.display = 'none';
+            document.getElementById('addName').value = '';
+            await fetchAllDoctors();
+        } else {
+            showNotification('❌ Error adding doctor', false);
+        }
+    });
+
+    window.removeDoctor = async function(id) {
+        if (!confirm('Remove this doctor?')) return;
+        const result = await deleteDoctor(id);
+        if (result?.status === 'success') {
+            showNotification('✅ Doctor removed');
+            await fetchAllDoctors();
+        } else {
+            showNotification('❌ Error removing doctor', false);
+        }
+    };
+
+    window.reactivateDoctor = async function(id) {
+        const doc = allDoctors.find(d => d.id === id);
+        if (!doc) return;
+        if (!confirm(`Reactivate "${doc.name}"?`)) return;
+        try {
+            const res = await fetch(`${API_BASE_URL}/doctors/${id}/reactivate`, { method: 'POST' });
+            const data = await res.json();
+            if (data.status === 'success') {
+                showNotification(`✅ ${doc.name} reactivated`);
+                await fetchAllDoctors();
+            } else {
+                showNotification('❌ Error reactivating doctor', false);
+            }
+        } catch (e) {
+            showNotification('❌ Network error', false);
+        }
+    };
+
+    fetchAllDoctors();
+})();
+</script>
+</body>
+</html>
